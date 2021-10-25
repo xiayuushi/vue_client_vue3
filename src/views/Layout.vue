@@ -3,11 +3,11 @@
     <AppTopnav></AppTopnav>
     <AppHeader>头部</AppHeader>
     <!-- 二级路由的容器 -->
-    <div class="main">
+    <div class="app-body">
       <!-- 二级路由 -->
       <router-view></router-view>
     </div>
-    <footer>底部</footer>
+    <AppFooter></AppFooter>
   </div>
 </template>
 
@@ -22,8 +22,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.container {
-  .hoverShadow();
-  background-color: @helpColor;
+.app-body {
+  min-height: 800px;
 }
 </style>
