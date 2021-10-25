@@ -1,7 +1,7 @@
 <template>
   <div>
     <AppTopnav></AppTopnav>
-    <header>头部</header>
+    <AppHeader>头部</AppHeader>
     <!-- 二级路由的容器 -->
     <div class="main">
       <!-- 二级路由 -->
