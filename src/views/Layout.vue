@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <nav>顶部通栏</nav>
+  <div>
+    <AppTopnav></AppTopnav>
     <header>头部</header>
     <!-- 二级路由的容器 -->
     <div class="main">
