@@ -1,7 +1,8 @@
 <template>
   <div>
     <AppTopnav></AppTopnav>
-    <AppHeader>头部</AppHeader>
+    <AppHeader></AppHeader>
+    <AppHeaderSticky></AppHeaderSticky>
     <!-- 二级路由的容器 -->
     <div class="app-body">
       <!-- 二级路由 -->
