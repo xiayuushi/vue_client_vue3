@@ -1,15 +1,15 @@
 <template>
   <ul class="app-header-nav">
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
-    <li v-for="item in list" :key="item.id">
-      <a href="#">{{ item.name }}</a>
-      <div class="layer">
+    <li v-for="item in list" :key="item.id" @mouseenter="showsubcatelist(item.id)" @mouseleave="hidesubcatelist(item.id)">
+      <router-link :to="`/category/${item.id}`" @click="hidesubcatelist(item.id)">{{ item.name }}</router-link>
+      <div class="layer" :class="{ open: item.open }">
         <ul>
           <li v-for="sub in item.children" :key="sub.id">
-            <a href="#">
+            <router-link :to="`/category/sub/${sub.id}`" @click="hidesubcatelist(item.id)">
               <img :src="sub.picture" alt="" />
               <p>{{ sub.name }}</p>
-            </a>
+            </router-link>
           </li>
         </ul>
       </div>
@@ -26,11 +26,13 @@ export default {
   setup () {
     const store = useStore()
     const list = computed(() => store.state.category.list)
-    return { list }
+    const showsubcatelist = id => store.commit('category/SHOWSUBCATELIST', id)
+    const hidesubcatelist = id => store.commit('category/HIDESUBCATELIST', id)
+    return { list, showsubcatelist, hidesubcatelist }
   }
 }
 // 1、vue3的setup中使用vuex需要注意，直接使用对象解构vuex的state数据是没有响应式的，因此必须使用computed计算属性api来取值才有响应式
-
+// 2、注意router-link标签动态绑定的to属性后面是字符串内嵌ES6模板字符串，例如：<router-link :to="`/category/sub/${sub.id}`">
 </script>
 
 <style lang="less" scoped>
@@ -55,11 +57,6 @@ export default {
         color: @xtxColor;
         border-bottom: 1px solid @xtxColor;
       }
-      // 鼠标悬停显示二级菜单（高度显示 透明度显示）
-      > .layer {
-        height: 132px;
-        opacity: 1;
-      }
     }
   }
 }
@@ -76,6 +73,12 @@ export default {
   opacity: 0;
   box-shadow: 0 0 5px #ccc;
   transition: all 0.2s 0.1s;
+  // 鼠标悬停显示二级菜单（高度显示 透明度显示）
+  // 有这个类就会显示
+  &.open {
+      height: 132px;
+      opacity: 1;
+  }
   ul {
     display: flex;
     flex-wrap: wrap;
