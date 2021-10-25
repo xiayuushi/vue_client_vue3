@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <nav>顶部通栏</nav>
     <header>头部</header>
     <!-- 二级路由的容器 -->
@@ -21,4 +21,9 @@ export default {
 // 4、相应的路由配置中，Layout是一级路由，它的children是二级路由Home
 </script>
 
-<style></style>
+<style lang="less" scoped>
+.container {
+  .hoverShadow();
+  background-color: @helpColor;
+}
+</style>
