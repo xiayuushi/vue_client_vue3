@@ -20,7 +20,6 @@ export default {
   setup () {
     const store = useStore()
     store.dispatch('category/getList')
-    return { }
   }
 }
 // 1、Layout是一级路由的布局容器，有顶部通栏、头部、主要内容区（二级路由容器）、底部

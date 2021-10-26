@@ -17,12 +17,9 @@ export default {
   name: 'AppHeaderSticky',
   setup () {
     const y = ref(0)
-    onMounted(() =>
-      window.addEventListener('scroll', () => {
-        y.value = document.documentElement.scrollTop
-      })
-    )
-    onUnmounted(() => window.removeEventListener('scroll'))
+    const scrollEvent = () => (y.value = document.documentElement.scrollTop)
+    onMounted(() => window.addEventListener('scroll', scrollEvent))
+    onUnmounted(() => window.removeEventListener('scroll', scrollEvent))
     return { y }
   }
 }

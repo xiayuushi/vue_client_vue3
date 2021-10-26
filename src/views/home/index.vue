@@ -1,9 +1,18 @@
 <template>
-  <div>Home</div>
+  <div class="page-home">
+    <div class="home-entry">
+      <div class="container">
+        <!-- 左侧分类 -->
+        <HomeCategory />
+      </div>
+    </div>
+  </div>
 </template>
-
 <script>
-export default {}
+import HomeCategory from './components/home_category'
+export default {
+  name: 'PageHome',
+  components: { HomeCategory }
+}
 </script>
-
-<style></style>
+<style scoped lang="less"></style>

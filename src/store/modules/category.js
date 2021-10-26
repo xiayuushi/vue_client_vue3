@@ -25,7 +25,6 @@ export default {
     async getList ({ commit }) {
       const { result } = await homeCategoryHead()
       result.map(v => (v.open = false))
-      console.log(result)
       commit('SETLIST', result)
     }
   }
