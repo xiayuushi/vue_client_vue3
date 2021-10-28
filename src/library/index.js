@@ -1,8 +1,10 @@
 import Skeleton from './Skeleton'
+import Carousel from './Carousel'
 
 export default {
   install (app) {
     app.component(Skeleton.name, Skeleton)
+    app.component(Carousel.name, Carousel)
   }
 }
 

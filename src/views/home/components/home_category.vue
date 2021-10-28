@@ -76,7 +76,7 @@ export default {
     const curCategory = computed(() => menuList.value.find(v => v.id === categoryId.value))
 
     homeBrand().then(res => (brand.brandlist = res.result))
-    console.log(menuList.value)
+    // console.log(menuList.value)
     return { menuList, categoryId, curCategory }
   }
 }

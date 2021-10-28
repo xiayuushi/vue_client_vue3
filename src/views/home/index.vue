@@ -4,15 +4,18 @@
       <div class="container">
         <!-- 左侧分类 -->
         <HomeCategory />
+        <!-- 轮播图 -->
+        <HomeBanner />
       </div>
     </div>
   </div>
 </template>
 <script>
 import HomeCategory from './components/home_category'
+import HomeBanner from './components/home_banner'
 export default {
   name: 'PageHome',
-  components: { HomeCategory }
+  components: { HomeCategory, HomeBanner }
 }
 </script>
 <style scoped lang="less"></style>
