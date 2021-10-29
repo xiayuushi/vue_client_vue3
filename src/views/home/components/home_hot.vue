@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import { ref } from 'vue'
 import { homeHot } from '@/api/home'
 import HomePanel from './home_panel'
 import HomeSkeleton from './home_skeleton'
@@ -29,15 +28,15 @@ export default {
   name: 'HomeHot',
   components: { HomePanel, HomeSkeleton },
   setup () {
-    const target = ref(null)
-    return { goodsList: dataLazyLoad(target, homeHot), target }
+    const { data, target } = dataLazyLoad(homeHot)
+    return { goodsList: data, target }
   }
 }
 
 // 1、因为做了数据懒加载（可视区加载），因此将原先直接通过api请求数据，改成使用封装好的懒加载函数dataLazyLoad来请求数据
 // 1、原先：homeHot().then(res => (goodsList.value = res.result)) 此时：dataLazyLoad(DOM, homeHot)
 // 2、使用封装好的懒加载函数必须先取到监听进入可视区的DOM
-// 3、dataLazyLoad函数，第一参数传入监听进入可视区的DOM，第二参数传入请求api，将结果赋值给预先定义好的请求数据goodsList
+// 3、dataLazyLoad函数，参数传入请求api，将请求结果data赋值给预先定义好的请求数据goodsList，而target是封装好的用于绑定监听可视区的dom
 
 </script>
 

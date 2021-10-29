@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import { ref } from 'vue'
 import { homeNew } from '@/api/home'
 import { dataLazyLoad } from '@/hooks'
 import HomePanel from './home_panel'
@@ -32,8 +31,8 @@ import HomeSkeleton from './home_skeleton'
 export default {
   components: { HomePanel, HomeSkeleton },
   setup () {
-    const target = ref(null)
-    return { goodsList: dataLazyLoad(target, homeNew), target }
+    const { data, target } = dataLazyLoad(homeNew)
+    return { goodsList: data, target }
   }
 }
 
