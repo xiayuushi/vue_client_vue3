@@ -1,9 +1,9 @@
 <template>
-  <div class="home-hot">
+  <div class="home-hot" ref="target">
     <HomePanel title="人气推荐" sub-title="人气爆款 不容错过">
     <!-- 替换默认插槽 -->
     <transition name="fade">
-      <ul ref="pannel" class="goods-list" v-if="goodsList.length">
+      <ul ref="pannel" class="goods-list" v-if="goodsList">
         <li v-for="item in goodsList" :key="item.id">
           <RouterLink to="/">
             <img :src="item.picture" alt="">
@@ -23,16 +23,22 @@ import { ref } from 'vue'
 import { homeHot } from '@/api/home'
 import HomePanel from './home_panel'
 import HomeSkeleton from './home_skeleton'
+import { dataLazyLoad } from '@/hooks'
 
 export default {
   name: 'HomeHot',
   components: { HomePanel, HomeSkeleton },
   setup () {
-    const goodsList = ref([])
-    homeHot().then(res => (goodsList.value = res.result))
-    return { goodsList }
+    const target = ref(null)
+    return { goodsList: dataLazyLoad(target, homeHot), target }
   }
 }
+
+// 1、因为做了数据懒加载（可视区加载），因此将原先直接通过api请求数据，改成使用封装好的懒加载函数dataLazyLoad来请求数据
+// 1、原先：homeHot().then(res => (goodsList.value = res.result)) 此时：dataLazyLoad(DOM, homeHot)
+// 2、使用封装好的懒加载函数必须先取到监听进入可视区的DOM
+// 3、dataLazyLoad函数，第一参数传入监听进入可视区的DOM，第二参数传入请求api，将结果赋值给预先定义好的请求数据goodsList
+
 </script>
 
 <style lang="less" scoped>
