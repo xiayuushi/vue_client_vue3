@@ -6,6 +6,8 @@
         <HomeCategory />
         <!-- 轮播图 -->
         <HomeBanner />
+        <!-- 面板 -->
+        <HomePanel />
       </div>
     </div>
   </div>
@@ -13,9 +15,10 @@
 <script>
 import HomeCategory from './components/home_category'
 import HomeBanner from './components/home_banner'
+import HomePanel from './components/home_panel'
 export default {
   name: 'PageHome',
-  components: { HomeCategory, HomeBanner }
+  components: { HomeCategory, HomeBanner, HomePanel }
 }
 </script>
 <style scoped lang="less"></style>
