@@ -4,9 +4,10 @@
       <!-- 替换右上角具名插槽 #right -->
       <template #right>
         <XxxMore path="/" />
-        </template>
+      </template>
       <!-- 替换默认插槽 -->
-        <ul class="goods-list">
+      <transition name="fade">
+        <ul class="goods-list" v-if="goodsList.length">
           <li v-for="item in goodsList" :key="item.id">
             <RouterLink :to="`/product/${item.id}`">
               <img :src="item.picture" alt="" />
@@ -15,6 +16,8 @@
             </RouterLink>
           </li>
         </ul>
+        <HomeSkeleton bg="#f0f9f4" v-else />
+      </transition>
     </HomePanel>
   </div>
 </template>
@@ -23,9 +26,10 @@
 import { ref } from 'vue'
 import { homeNew } from '@/api/home'
 import HomePanel from './home_panel'
+import HomeSkeleton from './home_skeleton'
 
 export default {
-  components: { HomePanel },
+  components: { HomePanel, HomeSkeleton },
   setup () {
     const goodsList = ref([])
     homeNew().then(res => (goodsList.value = res.result))
@@ -33,6 +37,13 @@ export default {
     return { goodsList }
   }
 }
+
+// 1、ref通常用于定义简单类型的响应式数据，当然也可以定义未知类型的响应式数据，定义数组也可以
+// 2、一般只有明确键值对的响应式对象才会使用reactive定义
+
+// 3、数据未回来之前，启用面板骨架组件渲染，且使用transition做动画过渡处理
+// 4、transition标签的name属性就是 动画过渡的css前缀，此处是.fade 则必须定义.fade类前缀样式 才能会有相应的动画过渡效果
+// 5、因为考虑到会多处用到面板骨架屏效果，因此将 .fade样式 放入到全局通用样式 assets/common.less中了
 </script>
 
 <style lang="less" scoped>
