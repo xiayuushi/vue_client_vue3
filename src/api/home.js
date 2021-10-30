@@ -20,7 +20,11 @@ export const homeHot = () => {
   return request('/home/hot', 'get')
 }
 
-// 获取首页人气推荐
+// 获取首页产品区块
 export const homeGoods = () => {
   return request('/home/goods', 'get')
+}
+// 获取首页最新专题
+export const homeSpecial = () => {
+  return request('/home/special', 'get')
 }
