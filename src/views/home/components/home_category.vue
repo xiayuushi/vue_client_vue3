@@ -19,7 +19,7 @@
       <ul v-if="curCategory && curCategory.goods">
         <li v-for="item in curCategory.goods" :key="item.id">
           <RouterLink :to="`/`">
-            <img :src="item.picture" alt="" />
+            <img v-lazy="item.picture" alt="" />
             <div class="info">
               <p class="name ellipsis-2">{{ item.name }}</p>
               <p class="desc ellipsis">{{ item.desc }}</p>
@@ -31,7 +31,7 @@
       <ul v-if="curCategory && curCategory.brandlist && curCategory.brandlist.length">
         <li class="brand" v-for="item in curCategory.brandlist" :key="item.id">
           <RouterLink :to="`/`">
-            <img :src="item.picture" alt="" />
+            <img v-lazy="item.picture" alt="" />
             <div class="info">
               <p class="place"><i class="iconfont icon-dingwei"></i>{{ item.place }}</p>
               <p class="desc ellipsis">{{ item.name }}</p>

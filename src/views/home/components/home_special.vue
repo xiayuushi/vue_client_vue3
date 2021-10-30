@@ -5,7 +5,7 @@
       <div class="special-list" ref="homeSpecial" v-if="specialList">
         <div class="special-item" v-for="item in specialList" :key="item.id">
           <RouterLink :to="`/produce/${item.id}`">
-            <img :src="item.detailsUrl" alt />
+            <img v-lazy="item.detailsUrl" alt />
             <div class="meta">
               <p class="title">
                 <span class="top ellipsis">{{ item.title }}</span>
