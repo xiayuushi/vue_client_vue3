@@ -19,3 +19,8 @@ export const homeNew = (limit = 4) => {
 export const homeHot = () => {
   return request('/home/hot', 'get')
 }
+
+// 获取首页人气推荐
+export const homeGoods = () => {
+  return request('/home/goods', 'get')
+}
