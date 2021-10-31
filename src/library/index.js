@@ -1,17 +1,24 @@
-import Skeleton from './Skeleton'
-import Carousel from './Carousel'
-import More from './More'
-import Bread from './Bread'
-import BreadItem from './Bread/item'
+// import Skeleton from './Skeleton'
+// import Carousel from './Carousel'
+// import More from './More'
+// import Bread from './Bread'
+// import BreadItem from './Bread/item'
 import defaultImg from '@/assets/images/200.png'
+
+const autoImportVuefiles = require.context('./', true, /\.vue$/) // 批量导入所有的.vue文件
 
 export default {
   install (app) {
-    app.component(Skeleton.name, Skeleton)
-    app.component(Carousel.name, Carousel)
-    app.component(More.name, More)
-    app.component(Bread.name, Bread)
-    app.component(BreadItem.name, BreadItem)
+    // app.component(Skeleton.name, Skeleton)
+    // app.component(Carousel.name, Carousel)
+    // app.component(More.name, More)
+    // app.component(Bread.name, Bread)
+    // app.component(BreadItem.name, BreadItem)
+
+    // 调用require.context()的返回函数的keys()可以得到批量导入文件组成的数组
+    autoImportVuefiles.keys().forEach(v => {
+      app.component(v.name, v)
+    })
     defineDirective(app)
   }
 }
@@ -64,6 +71,16 @@ const defineDirective = app => {
 
 // 10、图片懒加载的实现原理：先不给图片src设置地址，当监听图片盒子进入可视区时，再将图片地址设置给src
 // 10、定义好指令后，将地址绑定到src属性的代码改成 v-lazy  例如：:src="xxx" 改成 v-lazy="xxx"
+
+// 11、require.context()接收三个参数
+// 11、参数1是做批量导入处理的路径，是一个字符串形式的相对路径
+// 11、参数2是否对子级目录进行遍历匹配，是一个布尔值
+// 11、参数3是匹配文件格式的正则
+// 11、require.context()会返回一个新的函数，该函数调用keys()可以得到一个数组，该数组就是该路径中匹配出的所有符合正则的文件
+// 12、例如：批量导入当前目录下的.vue文件 require.context('./', true, /\.vue$/).keys()  后续就可以不需要一个一个的导入vue文件了
+// 12、上面之所以不注释掉，是为了后续查看对比 require.context().keys()批量导入前后的区别
+// 12、使用require.context('./', true, /\.vue$/)批量导入之前，必须一个一个的导入.vue文件
+// 12、使用require.context('./', true, /\.vue$/)批量导入之后，无需一个一个的导入.vue文件
 
 // D1、vue2中大部分的挂载或注册都是在vue上进行的
 // D1、vue3中所有的挂载注册都是在createApp()创建的app上进行扩展的，app提供 component directive 函数
