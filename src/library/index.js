@@ -1,6 +1,8 @@
 import Skeleton from './Skeleton'
 import Carousel from './Carousel'
 import More from './More'
+import Bread from './Bread'
+import BreadItem from './Bread/item'
 import defaultImg from '@/assets/images/200.png'
 
 export default {
@@ -8,6 +10,8 @@ export default {
     app.component(Skeleton.name, Skeleton)
     app.component(Carousel.name, Carousel)
     app.component(More.name, More)
+    app.component(Bread.name, Bread)
+    app.component(BreadItem.name, BreadItem)
     defineDirective(app)
   }
 }
