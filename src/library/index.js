@@ -17,7 +17,8 @@ export default {
 
     // 调用require.context()的返回函数的keys()可以得到批量导入文件组成的数组
     autoImportVuefiles.keys().forEach(v => {
-      app.component(v.name, v)
+      const componentItem = autoImportVuefiles(v).default
+      app.component(componentItem.name, componentItem)
     })
     defineDirective(app)
   }
@@ -81,6 +82,9 @@ const defineDirective = app => {
 // 12、上面之所以不注释掉，是为了后续查看对比 require.context().keys()批量导入前后的区别
 // 12、使用require.context('./', true, /\.vue$/)批量导入之前，必须一个一个的导入.vue文件
 // 12、使用require.context('./', true, /\.vue$/)批量导入之后，无需一个一个的导入.vue文件
+
+// 13、autoImportVuefiles(v).default 获取每一个组件，其中default等同于组件的export default实例
+// 14、autoImportVuefiles.keys().forEach内部的两句逻辑 可以简写成 app.component(v.name, v)
 
 // D1、vue2中大部分的挂载或注册都是在vue上进行的
 // D1、vue3中所有的挂载注册都是在createApp()创建的app上进行扩展的，app提供 component directive 函数

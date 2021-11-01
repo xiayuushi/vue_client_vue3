@@ -1,7 +1,7 @@
 <template>
   <ul class="app-header-nav">
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
-    <li v-for="item in list" :key="item.id" @mouseenter="showsubcatelist(item.id)" @mouseleave="hidesubcatelist(item.id)">
+    <li v-for="item in list" :key="item.id" @mousemove="showsubcatelist(item.id)" @mouseleave="hidesubcatelist(item.id)">
       <router-link :to="`/category/${item.id}`" @click="hidesubcatelist(item.id)">{{ item.name }}</router-link>
       <div class="layer" :class="{ open: item.open }">
         <ul>
@@ -33,6 +33,7 @@ export default {
 }
 // 1、vue3的setup中使用vuex需要注意，直接使用对象解构vuex的state数据是没有响应式的，因此必须使用computed计算属性api来取值才有响应式
 // 2、注意router-link标签动态绑定的to属性后面是字符串内嵌ES6模板字符串，例如：<router-link :to="`/category/sub/${sub.id}`">
+// 3、mousemove事件需要鼠标移动才会触发，而mouseenter是鼠标进入范围就会触发，跳转页面滚动到顶部时，尽量不要直接触发弹出层，此情景使用mousemove更恰当
 </script>
 
 <style lang="less" scoped>
