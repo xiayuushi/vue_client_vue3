@@ -5,7 +5,7 @@
         <div class="sub" v-for="sub in cate.children" :key="sub.id">
           <RouterLink :to="`/category/sub/${sub.id}`">{{ sub.name }}</RouterLink>
         </div>
-        <XtxMore path="`/category/${cate.id}`" />
+        <XxxMore path="`/category/${cate.id}`" />
       </template>
       <div class="box">
         <RouterLink class="cover" :to="`/category/${cate.id}`">
@@ -36,7 +36,6 @@ export default {
   components: { HomePanel, HomeGoods },
   setup () {
     const { data, target } = dataLazyLoad(homeGoods)
-    console.log(data)
     return { list: data, target }
   }
 }

@@ -31,6 +31,7 @@ export default {
       })
       return temp
     })
+
     return { allCategory }
   }
 }
@@ -41,6 +42,4 @@ export default {
 // 5、因为计算属性内部定义了对象temp并返回，因此无论temp是否有属性，它都不会报错，从而可以在标签中省略v-if做非空渲染判断
 </script>
 
-<style>
-
-</style>
+<style></style>
