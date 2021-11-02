@@ -1,12 +1,16 @@
 <template>
-  <div>
-    <h1>二级类目</h1>
+  <div class="container">
+    <!-- 二级分类面包屑 -->
+    <SubBread />
   </div>
 </template>
 
 <script>
+import SubBread from './components/sub_bread'
+
 export default {
-  name: 'SubCategory'
+  name: 'SubCategory',
+  components: { SubBread }
 }
 </script>
 

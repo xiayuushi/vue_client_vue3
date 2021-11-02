@@ -43,6 +43,8 @@ export default {
   display: flex;
   justify-content: space-around;
   padding-left: 40px;
+  // 此处必须加上层级，否则mousemove移入无法选中下方弹出层
+  z-index: 999;
   li {
     margin-right: 40px;
     width: 38px;

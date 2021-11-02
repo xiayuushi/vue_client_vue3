@@ -32,7 +32,7 @@ export default {
 // st3、面包屑最后一项不会添加 i 标签（即，面包屑最后一项不会有间隔符号 ，因此非最后一项就添加间隔符号）
 // st4、将已经准备好动态数组传入到父级结构（即，面包屑容器盒子）中
 
-//  后续使用 <XxxBread> <XxxBreadItem :to="/xxx">首页1</XxxBreadItem> </XxxBread>
+//  后续使用 <XxxBread> <XxxBreadItem to="/xxx">首页1</XxxBreadItem> </XxxBread>
 </script>
 
 <style lang="less">
