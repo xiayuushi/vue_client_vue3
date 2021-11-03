@@ -4,6 +4,7 @@
     <SubBread />
     <!-- 二级分类筛选区 -->
     <SubFilter />
+    <!--  -->
   </div>
 </template>
 
@@ -13,7 +14,8 @@ import SubFilter from './components/sub_filter'
 
 export default {
   name: 'SubCategory',
-  components: { SubBread, SubFilter }
+  components: { SubBread, SubFilter },
+  setup () { }
 }
 </script>
 

@@ -10,7 +10,7 @@ export const getCategory = id => {
   return request('/category', 'get', { id })
 }
 
-// 分类页-一级类目信息（包含二级分类信息）
+// 分类页-二级类目-筛选条件
 export const categorySubFilter = id => {
   return request('/category/sub/filter', 'get', { id })
 }
