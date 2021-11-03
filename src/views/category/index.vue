@@ -62,11 +62,11 @@ export default {
     })
 
     const subList = ref([])
-    const getSubList = (id) => {
-      getCategory(id).then(res => (subList.value = res.result.children))
+    const getSubList = () => {
+      getCategory(route.params.id).then(res => (subList.value = res.result.children))
     }
     watch(() => route.params.id, c => {
-      if (c && route.path === `/category/${c}`) getSubList(c)
+      if (c && route.path === `/category/${c}`) getSubList()
     }, { immediate: true })
 
     return { sliderList, topCategory, subList }

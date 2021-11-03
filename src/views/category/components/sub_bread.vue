@@ -2,8 +2,8 @@
   <div class="sub-bread">
     <XxxBread>
       <XxxBreadItem to="/">首页</XxxBreadItem>
-      <XxxBreadItem :to="`/category/${allCategory.category.id}`">{{ allCategory.category.name }}</XxxBreadItem>
-      <XxxBreadItem :to="`/category/sub/${allCategory.sub.id}`">{{ allCategory.sub.name }}</XxxBreadItem>
+      <XxxBreadItem :to="`/category/${allCategory.category.id}`" v-if="allCategory.category">{{ allCategory.category.name }}</XxxBreadItem>
+      <XxxBreadItem :to="`/category/sub/${allCategory.sub.id}`" v-if="allCategory.sub">{{ allCategory.sub.name }}</XxxBreadItem>
     </XxxBread>
   </div>
 </template>
@@ -40,6 +40,7 @@ export default {
 // 3、在当前（二级类目）组件中获取 route.params.id 是二级类目的路由信息，（例如：/category/sub/1000）
 // 4、forEach中形参item就是一级类目category的每一项，而sub是一级类目对应下的二级类目
 // 5、因为计算属性内部定义了对象temp并返回，因此无论temp是否有属性，它都不会报错，从而可以在标签中省略v-if做非空渲染判断
+// 6、XxxBreadItem必须加上v-if判断，否则在刷新分类页的二级类目时id会报错
 </script>
 
 <style></style>
