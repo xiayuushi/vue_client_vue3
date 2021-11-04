@@ -12,8 +12,8 @@
       </a>
     </div>
     <div class="check">
-      <XxxCheckbox v-model="sortParams.inventory">仅显示有货商品</XxxCheckbox>
-      <XxxCheckbox v-model="sortParams.onlyDiscount">仅显示特惠商品</XxxCheckbox>
+      <XxxCheckbox v-model="sortParams.inventory" @change="changeChecked">仅显示有货商品</XxxCheckbox>
+      <XxxCheckbox v-model="sortParams.onlyDiscount" @change="changeChecked">仅显示特惠商品</XxxCheckbox>
     </div>
   </div>
 </template>
@@ -44,9 +44,15 @@ export default {
         sortParams.sortField = condition
         sortParams.sortMethod = null
       }
+
+      emit('sortChangeEvent', sortParams)
     }
 
-    return { sortParams, sortChange }
+    const changeChecked = () => {
+      emit('sortChangeEvent', sortParams)
+    }
+
+    return { sortParams, sortChange, changeChecked }
   }
 }
 
@@ -58,6 +64,7 @@ export default {
 // 5、如果是初次点击价格排序，再将其设置为接口要求的默认的'desc'价格倒序排列
 // 6、如果点击非价格排序，点击时除了将传参赋值给sortParams.sortField字段外，还应该重置价格排序为初始的null（价格排序上下箭头都不高亮），如此当下次再初次点击价格排序时，才会是默认的倒序排列
 // 7、如果已经选中了的某个非价格排序，再次点击该排序应该阻止操作，否则后续调用接口阶段会随着重复点击而重复发请求...
+// 8、sortChange触发后，必须emit('sortChangeEvent', sortParams)通知父组件，并让父组件sub.vue接收排序变更后的参数sortParams
 
 </script>
 

@@ -48,6 +48,7 @@ export default {
 
 // 8、让组件支持change事件，必须emit()通知父组件change事件，值已经发生修改（因为change事件不是双向绑定数据，因此必须手动emit()通知）
 // 9、组件标签中可以使用$slots.default获取默认插槽的内容 组件方法中可以使用this.$slots.default()获取默认插槽的内容（如果是具名插槽，则$slot点出插槽name属性值即可）
+// 10、复选框的change事件，后续会使用到，因此在封装时必须让封装的组件与原生checkbox一样支持change事件
 
 </script>
 
