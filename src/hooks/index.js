@@ -29,3 +29,5 @@ export const dataLazyLoad = request => {
 // 3、接收返回数据的时候 const data = ref(null) 定义为null，后续使用该api请求接口，无法使用length进行非空判断
 // 4、target是监听的dom，可以由外部传入，之所以从当前函数形参中提取到函数体内部，是为了在外部调用该函数时简化导入ref以及传参的步骤
 // 5、threshold是useIntersectionObserver提供的临界点参数，表示当可视区与做可视区加载的盒子临界相交多少时触发（值为0表示一进入可视区就加载）
+// 6、该封装方法只能用于vue3组合API内，因为useIntersectionObserver是vue3中vueuse库的方法
+// 7、如果想要在组合API外（setup周期外部）使用，可以使用原生的IntersectionObserver进行封装，useIntersectionObserver是基于原生IntersectionObserver进行的封装

@@ -4,25 +4,99 @@
     <SubBread />
     <!-- 二级分类筛选区 -->
     <SubFilter />
-    <!-- 二级分类 -->
+    <!-- 二级分类筛选结果 -->
     <div class="goods-list">
+      <!-- 排序 -->
       <SubSort />
+      <!-- 筛选结果列表（符合筛选结果的商品列表） -->
+      <ul><li v-for="item in goodsList" :key="item"><GoodsItem :goods="item" /></li></ul>
+      <!-- 无限加载 -->
+      <XxxInfiniteLoading :isLoading="isLoading" :isFinished="isFinished" @onLoad="onLoad" />
     </div>
   </div>
 </template>
 
 <script>
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { categoryGoodsTemporary } from '@/api/category'
+
 import SubBread from './components/sub_bread'
 import SubFilter from './components/sub_filter'
 import SubSort from './components/sub_sort'
+import GoodsItem from './components/goods_item'
+import XxxInfiniteLoading from '@/library/Infinite'
 
 export default {
   name: 'SubCategory',
-  components: { SubBread, SubFilter, SubSort },
-  setup () { }
+  components: { SubBread, SubFilter, SubSort, GoodsItem, XxxInfiniteLoading },
+  setup () {
+    const route = useRoute()
+    const goodsList = ref([])
+    const isLoading = ref(false)
+    const isFinished = ref(false)
+    let params = {
+      categoryId: route.params.id,
+      page: 1,
+      pagsize: 20
+    }
+
+    const onLoad = () => {
+      categoryGoodsTemporary(params).then(({ result }) => {
+        if (result.items.length) {
+          goodsList.value = [...goodsList.value, ...result.items]
+          params.page++
+        } else {
+          isFinished.value = true
+        }
+        isLoading.value = false
+      })
+    }
+
+    watch(() => route.params.id, c => {
+      if (c && route.path === `/category/sub/${c}`) {
+        goodsList.value = []
+        params = {
+          categoryId: c,
+          page: 1,
+          pagsize: 20
+        }
+        isLoading.value = false
+        isFinished.value = false
+      }
+    }, {
+      immediate: true
+    })
+
+    return { isLoading, isFinished, onLoad, goodsList }
+  }
 }
+
+// 1、无限加载做的是数据拼接，goodsList.value = [...goodsList.value, ...result.items]也可以直接写成 goodsList.value.push(...result.items)
+// 2、如果返回数组不为空，说明还有数据，此时需要页码加1，继续将请求回来的商品数据添加加入到商品数组列表中渲染
+// 3、如果返回数组为空，说明数据已经加载完毕，此时必须将isFinished状态置为true（让无限加载停止）
+// 4、数据加载完毕或者请求完成，都必须将isLoading置为false
+// 5、当切换到其他二级类目时，应该清空渲染数组以及重置无限加载的数据（类目id、页码、加载状态、加载完成状态），因此需要监听二级类目的路由变化
+// 6、当渲染数组被清空后，因为没有数据渲染，此时做可视区的dom会自动"上移"进入可视区范围，从而触发@onLoad进行无限加载，因此无需在watch中手动调用接口
+
 </script>
 
-<style>
-
+<style lang="less" scoped>
+.goods-list {
+  background: #fff;
+  padding: 0 25px;
+  margin-top: 25px;
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 5px;
+    li {
+      margin-right: 20px;
+      margin-bottom: 20px;
+      &:nth-child(5n) {
+        margin-right: 0;
+      }
+    }
+  }
+}
 </style>

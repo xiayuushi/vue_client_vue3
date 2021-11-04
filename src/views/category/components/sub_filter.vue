@@ -3,7 +3,7 @@
      <div class="item" v-if="filterData && filterData.brands">
        <div class="head">品牌：</div>
        <div class="body">
-         <a :class="{active: filterData.brands.selectedBrand === item.id}"
+         <a :class="{ active: filterData.brands.selectedBrand === item.id }"
             @click="filterData.brands.selectedBrand = item.id"
             href="javascript:;" v-for="item in filterData.brands" :key="item.id">
             {{ item.name }}
@@ -14,7 +14,7 @@
         <div class="item" v-for="item in filterData.saleProperties" :key="item.id">
           <div class="head">{{ item.name }}：</div>
           <div class="body">
-            <a :class="{active: item.properties.selectedProp === sub.id}"
+            <a :class="{ active: item.properties.selectedProp === sub.id }"
                @click="item.properties.selectedProp = sub.id"
                href="javascript:;" v-for="sub in item.properties" :key="sub.id">
                {{ sub.name }}

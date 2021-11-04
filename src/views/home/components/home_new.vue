@@ -9,7 +9,7 @@
       <transition name="fade">
         <ul class="goods-list" v-if="goodsList">
           <li v-for="item in goodsList" :key="item.id">
-            <RouterLink :to="`/product/${item.id}`">
+            <RouterLink :to="`/product/${ item.id }`">
               <img v-lazy="item.picture" alt="" />
               <p class="name ellipsis">{{ item.name }}</p>
               <p class="price">&yen;{{ item.price }}</p>

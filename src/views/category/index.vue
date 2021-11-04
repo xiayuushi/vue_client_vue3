@@ -15,7 +15,7 @@
         <h3>全部分类</h3>
         <ul>
           <li v-for="item in topCategory.children" :key="item.id">
-            <router-link :to="`/category/sub/${item.id}`">
+            <router-link :to="`/category/sub/${ item.id }`">
               <img :src="item.picture" >
               <p>{{ item.name }}</p>
             </router-link>
@@ -27,7 +27,7 @@
         <div class="head">
           <h3>- {{ sub.name }} -</h3>
           <p class="tag">温暖柔软，品质之选</p>
-          <XxxMore :path="`/category/sub/${sub.id}`" />
+          <XxxMore :path="`/category/sub/${ sub.id }`" />
         </div>
         <div class="body">
           <GoodsItem v-for="v in sub.goods" :key="v.id" :goods="v" />

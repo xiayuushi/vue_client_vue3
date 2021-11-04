@@ -2,15 +2,15 @@
   <HomePanel title="热门品牌" sub-title="国际经典 品质保证" ref="target">
     <template #right>
       <a @click="togglePage(-1)" href="javascript:void(0);">
-        <i class="iconfont icon-angle-left prev" :class="{disabled: index===0}"></i>
+        <i class="iconfont icon-angle-left prev" :class="{ disabled: index === 0 }"></i>
       </a>
       <a @click="togglePage(+1)" href="javascript:void(0);">
-        <i class="iconfont icon-angle-right next" :class="{disabled: index===1}"></i>
+        <i class="iconfont icon-angle-right next" :class="{ disabled: index === 1 }"></i>
       </a>
     </template>
     <div class="box" ref="box">
       <transition name="fade">
-        <ul class="list" :style="{transform:`translateX(${-1240*index}px)`}" v-if="brandsList">
+        <ul class="list" :style="{ transform: `translateX(${ -1240 * index }px)` }" v-if="brandsList">
           <li v-for="item in brandsList" :key="item.id">
               <RouterLink to="/">
                 <img v-lazy="item.picture" alt="">

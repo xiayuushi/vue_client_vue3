@@ -3,9 +3,9 @@
     <!-- 左侧分类列表 -->
     <ul class="menu">
       <li :class="{ active: categoryId && categoryId === item.id }" v-for="item in menuList" :key="item.id" @mouseenter="categoryId = item.id">
-        <RouterLink :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
+        <RouterLink :to="`/category/${ item.id }`">{{ item.name }}</RouterLink>
         <template v-if="item.children">
-          <RouterLink :to="`/category/sub/${sub.id}`" v-for="sub in item.children" :key="sub.id" >{{ sub.name }}</RouterLink>
+          <RouterLink :to="`/category/sub/${ sub.id }`" v-for="sub in item.children" :key="sub.id" >{{ sub.name }}</RouterLink>
         </template>
         <template v-else>
           <XxxSkeleton width="60px" height="18px" bg="rgba(255, 255, 255, .1)" animated style="margin-right: 20px;" />
@@ -18,7 +18,7 @@
       <h4 v-if="curCategory">{{ categoryId !== 'brand' ? '分类推荐' : '品牌推荐' }}<small>根据您的购买或浏览记录推荐</small></h4>
       <ul v-if="curCategory && curCategory.goods">
         <li v-for="item in curCategory.goods" :key="item.id">
-          <RouterLink :to="`/`">
+          <RouterLink to="/">
             <img v-lazy="item.picture" alt="" />
             <div class="info">
               <p class="name ellipsis-2">{{ item.name }}</p>
@@ -30,7 +30,7 @@
       </ul>
       <ul v-if="curCategory && curCategory.brandlist && curCategory.brandlist.length">
         <li class="brand" v-for="item in curCategory.brandlist" :key="item.id">
-          <RouterLink :to="`/`">
+          <RouterLink to="/">
             <img v-lazy="item.picture" alt="" />
             <div class="info">
               <p class="place"><i class="iconfont icon-dingwei"></i>{{ item.place }}</p>

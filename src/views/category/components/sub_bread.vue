@@ -2,8 +2,8 @@
   <div class="sub-bread">
     <XxxBread>
       <XxxBreadItem to="/">首页</XxxBreadItem>
-      <XxxBreadItem :to="`/category/${allCategory.category.id}`" v-if="allCategory.category">{{ allCategory.category.name }}</XxxBreadItem>
-      <XxxBreadItem :to="`/category/sub/${allCategory.sub.id}`" v-if="allCategory.sub">{{ allCategory.sub.name }}</XxxBreadItem>
+      <XxxBreadItem :to="`/category/${ allCategory.category.id }`" v-if="allCategory.category">{{ allCategory.category.name }}</XxxBreadItem>
+      <XxxBreadItem :to="`/category/sub/${ allCategory.sub.id }`" v-if="allCategory.sub">{{ allCategory.sub.name }}</XxxBreadItem>
     </XxxBread>
   </div>
 </template>

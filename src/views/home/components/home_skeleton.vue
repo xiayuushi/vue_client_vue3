@@ -1,6 +1,6 @@
 <template>
   <div class='home-skeleton'>
-    <div class="item" v-for="i in 4" :key="i" :style="{backgroundColor:bg}">
+    <div class="item" v-for="i in 4" :key="i" :style="{ backgroundColor: bg }">
       <XxxSkeleton bg="#e4e4e4" width="306px" height="306px" animated />
       <XxxSkeleton bg="#e4e4e4" width="160px" height="24px" animated />
       <XxxSkeleton bg="#e4e4e4" width="120px" height="24px" animated />
