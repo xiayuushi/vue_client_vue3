@@ -9,7 +9,12 @@
         <XxxBreadItem>{{ goods.name }}</XxxBreadItem>
       </XxxBread>
       <!-- 商品信息 -->
-      <div class="goods-info"></div>
+      <div class="goods-info">
+        <div class="media">
+          <GoodsImage :images="goods.mainPictures" />
+        </div>
+        <div class="spec"></div>
+      </div>
       <!-- 商品推荐 -->
       <GoodsRelevant />
       <!-- 商品详情 -->
@@ -32,9 +37,10 @@ import { useRoute } from 'vue-router'
 import { ref, watch, nextTick } from 'vue'
 import { findGoods } from '@/api/product'
 import GoodsRelevant from './components/goods_relevant'
+import GoodsImage from './components/goods_image'
 
 const getGoods = () => {
-  const goods = ref([])
+  const goods = ref(null)
   const route = useRoute()
 
   watch(() => route.params.id, c => {
@@ -43,7 +49,6 @@ const getGoods = () => {
         goods.value = null
         nextTick(() => (goods.value = result))
       })
-      console.log(goods)
     }
   }, { immediate: true })
 
@@ -52,7 +57,7 @@ const getGoods = () => {
 
 export default {
   name: 'GoodsPage',
-  components: { GoodsRelevant },
+  components: { GoodsRelevant, GoodsImage },
   setup () {
     const goods = getGoods()
     return { goods }
@@ -70,10 +75,20 @@ export default {
 
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 .goods-info {
   min-height: 600px;
   background: #fff;
+  display: flex;
+  .media {
+    width: 580px;
+    height: 600px;
+    padding: 30px 50px;
+  }
+  .spec {
+    flex: 1;
+    padding: 30px 30px 30px 0;
+  }
 }
 .goods-footer {
   display: flex;
