@@ -3,7 +3,7 @@
     <!-- 二级分类面包屑 -->
     <SubBread />
     <!-- 二级分类筛选区 -->
-    <SubFilter />
+    <SubFilter @filterChangeEvent="filterChangeEvent" />
     <!-- 二级分类筛选结果 -->
     <div class="goods-list">
       <!-- 排序 -->
@@ -69,14 +69,22 @@ export default {
     })
 
     const sortChangeEvent = sortParams => {
-      goodsList.value = []
       params = { ...params, ...sortParams }
       params.page = 1
+      goodsList.value = []
       isLoading.value = false
       isFinished.value = false
     }
 
-    return { isLoading, isFinished, onLoad, goodsList, sortChangeEvent }
+    const filterChangeEvent = filterParams => {
+      params = { ...params, ...filterParams }
+      params.page = 1
+      goodsList.value = []
+      isLoading.value = false
+      isFinished.value = false
+    }
+
+    return { isLoading, isFinished, onLoad, goodsList, sortChangeEvent, filterChangeEvent }
   }
 }
 
@@ -87,8 +95,9 @@ export default {
 // 5、当切换到其他二级类目时，应该清空渲染数组以及重置无限加载的数据（类目id、页码、加载状态、加载完成状态），因此需要监听二级类目的路由变化
 // 6、当渲染数组被清空后，因为没有数据渲染，此时做可视区的dom会自动"上移"进入可视区范围，从而触发@onLoad进行无限加载，因此无需在watch中手动调用接口（只需变更接口参数即可，后续的排序或筛选渲染商品列表的逻辑类似）
 // 7、SubSort标签中通过实现@sortChangeEvent接收子组件sub_sort.vue传递的参数，用于重置排序后合并参数发请求（无需手动发请求，只要进入可视区范围会自动触发无限加载组件的@onLoad进行接口请求）
-// 8、当前组件的sortChangeEvent中的形参sortParams，可以接收到子组件sub_sort.vue中点击排序或者复选框时触发sortChange事件后，传递过来的参数
-// 9、当进入可视区（触发无限加载组件onLoad事件后）会自动发请求，因此无需手动调用接口发请求，只需要合并接口需要的参数、清空商品列表数组、重置页码为1、重置isFinished与isLoading即可
+// 8、当前组件的sortChangeEvent中的形参sortParams，可以接收到子组件sub_sort.vue中点击排序或者复选框时触发sortChange事件时，emit()传递的@sortChangeEvent事件传递过来的参数
+// 9、当前组件的filterChangeEvent中的形参filterParams，可以接收到子组件sub_sort.vue中点击二级分类筛选时触发changeBrand或changeProp事件时，emit()传递的@filterChangeEvent事件传递过来的参数
+// 10、当进入可视区（触发无限加载组件onLoad事件后）会自动发请求，因此无需手动调用接口发请求，只需要合并子组件传递过来的，接口需要的参数、清空商品列表数组、重置页码为1、重置isFinished与isLoading即可
 
 </script>
 

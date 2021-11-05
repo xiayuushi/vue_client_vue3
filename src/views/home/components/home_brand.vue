@@ -40,7 +40,6 @@ export default {
       const currentIndex = index.value + step
       if (currentIndex < 0 || currentIndex > 1) return
       index.value = currentIndex
-      console.log(currentIndex)
     }
 
     const { data, target } = dataLazyLoad(() => homeBrand(10))
