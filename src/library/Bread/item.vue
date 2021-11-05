@@ -10,7 +10,8 @@ export default {
   name: 'XxxBreadItem',
   props: {
     to: {
-      type: [String, Object]
+      type: [String, Object],
+      default: ''
     }
   }
 }
