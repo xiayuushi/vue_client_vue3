@@ -12,8 +12,11 @@
       <div class="goods-info">
         <div class="media">
           <GoodsImage :images="goods.mainPictures" />
+          <GoodsSales />
         </div>
-        <div class="spec"></div>
+        <div class="spec">
+          <GoodsName :goods="goods" />
+        </div>
       </div>
       <!-- 商品推荐 -->
       <GoodsRelevant />
@@ -38,6 +41,8 @@ import { ref, watch, nextTick } from 'vue'
 import { findGoods } from '@/api/product'
 import GoodsRelevant from './components/goods_relevant'
 import GoodsImage from './components/goods_image'
+import GoodsSales from './components/goods_sales'
+import GoodsName from './components/goods_name'
 
 const getGoods = () => {
   const goods = ref(null)
@@ -57,7 +62,7 @@ const getGoods = () => {
 
 export default {
   name: 'GoodsPage',
-  components: { GoodsRelevant, GoodsImage },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName },
   setup () {
     const goods = getGoods()
     return { goods }
