@@ -12,7 +12,7 @@
     </dl>
     <dl>
       <dt>配送</dt>
-      <dd>至 </dd>
+      <dd>至 <XxxCity :fullLocation="fullLocation" @update:fullLocation="changeFullLocation" /></dd>
     </dl>
     <dl>
       <dt>服务</dt>
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+
 export default {
   name: 'GoodsName',
   props: {
@@ -34,12 +36,45 @@ export default {
       type: Object,
       default: () => ({})
     }
+  },
+  setup (props) {
+    // 用户未登录（显示的系统定义的默认地址）
+    const provinceCode = ref('110000')
+    const cityCode = ref('119900')
+    const countyCode = ref('110101')
+    const fullLocation = ref('北京市 市辖区 东城区')
+
+    // 用户已登录（显示的用户设置的默认地址）
+    if (props.goods.userAddresses) {
+      const defaultAddress = props.goods.userAddresses.find(item => item.isDefault === 1)
+      if (defaultAddress) {
+        provinceCode.value = defaultAddress.provinceCode
+        cityCode.value = defaultAddress.cityCode
+        countyCode.value = defaultAddress.countyCode
+        fullLocation.value = defaultAddress.fullLocation
+      }
+    }
+
+    // 用户点选更改了收货地址
+    const changeFullLocation = payload => {
+      provinceCode.value = payload.provinceCode
+      cityCode.value = payload.cityCode
+      countyCode.value = payload.countyCode
+      fullLocation.value = payload.fullLocation
+    }
+
+    return { fullLocation, changeFullLocation }
   }
 }
+
 // 1、vue3支持多根元素，即使在IDE报错必须有一个根容器也可以运行
 // 2、如果想关闭IDE的报错，可以找到项目根目录下的.vscode目录的settings.json文件(如无该文件则新建之)
 // 2、加入一行："vetur.validation.template": false
 // 2、后续，不会进行模板检查也就不提示这个错误了，但eslint的模板检查功能也失去了
+// 3、用户未登录则显示的默认的省市区地址进行展示，因此需要定义省市区code，以及它们拼凑组成的文字交给城市组件做默认显示
+// 3、用户已登录则必须从用户的默认收货地址中遍历出对应的四项数据进行赋值，将拼凑组成的文字交给城市组件做默认展示
+// 4、用户还可以点选地址，点选后的数据需要传到当前组件中去改写用户设置的默认地址
+// 5、此处:fullLocation="fullLocation" @update:fullLocation="changeFullLocation"不能简写为"v-model:fullLocation"因为changeFullLocation函数修改的不仅仅是fullLocation的数据
 
 </script>
 
