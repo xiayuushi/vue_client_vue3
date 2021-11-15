@@ -21,8 +21,8 @@
           <XxxButton type="primary" style="margin-top: 20px">加入购物车</XxxButton>
         </div>
       </div>
-      <!-- 商品推荐 -->
-      <GoodsRelevant />
+      <!-- 商品推荐 | 猜你喜欢-->
+      <GoodsRelevant :goods-id="goods.id" />
       <!-- 商品详情 -->
       <div class="goods-footer">
         <div class="goods-article">
@@ -42,11 +42,11 @@
 import { useRoute } from 'vue-router'
 import { ref, watch, nextTick } from 'vue'
 import { findGoods } from '@/api/product'
-import GoodsRelevant from './components/goods_relevant'
 import GoodsImage from './components/goods_image'
 import GoodsSales from './components/goods_sales'
 import GoodsName from './components/goods_name'
 import GoodsSku from './components/goods_sku'
+import GoodsRelevant from './components/goods_relevant'
 
 const getGoods = () => {
   const goods = ref(null)
@@ -66,7 +66,7 @@ const getGoods = () => {
 
 export default {
   name: 'GoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku },
+  components: { GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsRelevant },
   setup () {
     const goods = getGoods()
     const acceptPayload = sku => {

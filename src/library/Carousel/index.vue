@@ -2,11 +2,19 @@
   <!-- 整体轮播图区域盒子 -->
   <div class="xxx-carousel" @mouseenter="stopAutoPlay" @mouseleave="restartAutoPlay">
     <ul class="carousel-body">
-      <!-- 图片 -->
       <li class="carousel-item" :class="{fade: currentIndex===index}" v-for="(item, index) in sliderList" :key="index">
-        <router-link :to="item.hrefUrl">
+        <!-- 图片 -->
+        <router-link :to="item.hrefUrl" v-if="item.hrefUrl">
           <img :src="item.imgUrl" alt="">
         </router-link>
+        <!-- 图片列表 -->
+        <div v-else class="slider">
+          <router-link :to="`/product/${ item.id }`" v-for="sub in item" :key="sub.id">
+            <img :src="sub.picture" alt="" :title="sub.name">
+            <p class="name ellipsis">{{ sub.name }}</p>
+            <p class="price">&yen;{{ sub.price }}</p>
+          </router-link>
+        </div>
       </li>
     </ul>
     <!-- 左右切换按钮 -->
@@ -175,6 +183,31 @@ export default {
   &:hover {
     .carousel-btn {
       opacity: 1;
+    }
+  }
+  // 轮播图片（商品）列表
+  .slider {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 40px;
+    > a {
+      width: 240px;
+      text-align: center;
+      img {
+        padding: 20px;
+        width: 230px!important;
+        height: 230px!important;
+      }
+      .name {
+        font-size: 16px;
+        color: #666;
+        padding: 0 40px;
+      }
+      .price {
+        font-size: 16px;
+        color: @priceColor;
+        margin-top: 15px;
+      }
     }
   }
 }
