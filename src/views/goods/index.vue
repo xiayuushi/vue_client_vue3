@@ -16,6 +16,7 @@
         </div>
         <div class="spec">
           <GoodsName :goods="goods" />
+          <GoodsSku :goods="goods" skuid="1369155865461919746" />
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -43,6 +44,7 @@ import GoodsRelevant from './components/goods_relevant'
 import GoodsImage from './components/goods_image'
 import GoodsSales from './components/goods_sales'
 import GoodsName from './components/goods_name'
+import GoodsSku from './components/goods_sku'
 
 const getGoods = () => {
   const goods = ref(null)
@@ -62,7 +64,7 @@ const getGoods = () => {
 
 export default {
   name: 'GoodsPage',
-  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName },
+  components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku },
   setup () {
     const goods = getGoods()
     return { goods }
