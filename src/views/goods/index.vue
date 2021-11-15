@@ -18,6 +18,7 @@
           <GoodsName :goods="goods" />
           <GoodsSku :goods="goods" skuid="1369155865461919746" @change="acceptPayload" />
           <XxxNumbox v-model="num" label="数量" :max="goods.inventory" />
+          <XxxButton type="primary" style="margin-top: 20px">加入购物车</XxxButton>
         </div>
       </div>
       <!-- 商品推荐 -->
