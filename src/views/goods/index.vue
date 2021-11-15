@@ -17,6 +17,7 @@
         <div class="spec">
           <GoodsName :goods="goods" />
           <GoodsSku :goods="goods" skuid="1369155865461919746" @change="acceptPayload" />
+          <XxxNumbox v-model="num" label="数量" :max="goods.inventory" />
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -75,7 +76,8 @@ export default {
         goods.value.inventory = sku.inventory
       }
     }
-    return { goods, acceptPayload }
+    const num = ref(1)
+    return { goods, acceptPayload, num }
   }
 }
 
