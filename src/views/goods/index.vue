@@ -16,7 +16,7 @@
         </div>
         <div class="spec">
           <GoodsName :goods="goods" />
-          <GoodsSku :goods="goods" skuid="1369155865461919746" />
+          <GoodsSku :goods="goods" skuid="1369155865461919746" @change="acceptPayload" />
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -67,7 +67,15 @@ export default {
   components: { GoodsRelevant, GoodsImage, GoodsSales, GoodsName, GoodsSku },
   setup () {
     const goods = getGoods()
-    return { goods }
+    const acceptPayload = sku => {
+      console.log(sku)
+      if (sku.skuid) {
+        goods.value.oldPrice = sku.oldPrice
+        goods.value.price = sku.price
+        goods.value.inventory = sku.inventory
+      }
+    }
+    return { goods, acceptPayload }
   }
 }
 
@@ -79,6 +87,7 @@ export default {
 // 3、goods.value = null; nextTick(() => (goods.value = result)) 当组件中以goods这个数据作为v-if的判断条件时，goods数据更新时会重新初始化该组件
 // 4、vue3中必须将nextTick从vue中导入后才能使用，这点与ref、watch类似
 // 5、getGoods函数用于获取商品详情数据，注意不要在watch第二参数回调函数体内return接口返回的数据，否则面包屑渲染时拿不到插槽中的节点内容（文字）
+// 6、acceptPayload用于接收goods_sku组件传递过来的用户已选的sku数据，并根据选择的sku修改原价现价库存等
 
 </script>
 

@@ -73,7 +73,7 @@ export default {
       default: ''
     }
   },
-  setup (props) {
+  setup (props, { emit }) {
     const pathMap = getPathMap(props.goods.skus)
 
     updateDisabledStatus(props.goods.specs, pathMap)
@@ -89,6 +89,20 @@ export default {
         sub.selected = true
       }
       updateDisabledStatus(props.goods.specs, pathMap)
+      const filterUndefinedSelectedList = getSelectedList(props.goods.specs).filter(v => v)
+      if (filterUndefinedSelectedList.length === props.goods.specs.length) {
+        const id = pathMap[filterUndefinedSelectedList.join('♥')][0]
+        const curSkuData = props.goods.skus.find(item => item.id === id)
+        emit('change', {
+          skuid: curSkuData.id,
+          inventory: curSkuData.inventory,
+          price: curSkuData.price,
+          oldPrice: curSkuData.oldPrice,
+          specsText: curSkuData.specs.reduce((p, c) => (`${p} ${c.name}: ${c.valueName}`), '').trim()
+        })
+      } else {
+        emit('change', {})
+      }
     }
 
     return { toggleSelected }
@@ -103,6 +117,9 @@ export default {
 // 3、一个函数实现同时不同规格选项的取反，各个选项之间只能有一个值被选中，因此必须分情况进行取反（给每个按钮选项添加一个选中或者未选中的selected状态）
 // 3、如当前点击项规格已选中，则再点击取消选中；如当前点击规格未选中，先将当前规格中可能选中的值先遍历都取消选中，再将当前点击规格的值选中
 // 3、如果当前点击项是禁用的，则不能往下执行，须return
+// 3、根据选择的完整SKU规格传出SKU信息，传出的SKU信息包括：id、现价、原价、库存、specsText（该拼接字符串会在购物车渲染时用到）
+// 3、触发自定义的change事件将数据传递给goods/index.vue中的GoodsSku组件
+// 3、规格选择是完整的，则传递完整信息，否则传递空对象给父组件，该对象用于渲染购物车数据使用（规则选择不完整不能加入购物车）
 
 // 4.0、getPathMap函数用于定义路径字典对象，作为后续禁用的依据
 // 4.1、获取服务器接口中返回SKU数据，（后台提供的SKU数据并非全部都是有效的，只有数量大于0的才是有效库存）
@@ -131,12 +148,18 @@ export default {
 // 6、updateDisabledStatus用于判断是否可以点击、用于更新按钮的禁用状态
 // 6、initDefaultSelected用于初始化选中sku商品，当用户选择并加入购物车时会用到
 
-// 7、服务器返回的数据结构（全部库存） goods.skus=[item,item,item]
-// 7、服务器返回的数据结构（全部库存） item={id:'121323',inventory: 99973, price: "128.00", oldPrice: "200.00", specs:[]}
-// 7、服务器返回的数据结构（对应skuid的已选中sku） specs=[{name: "颜色", valueName: "蓝色"},{name: "尺寸", valueName: "20cm"},{name: "产地", valueName: "中国"}]
-// 7、服务器返回的数据结构（可选的sku列表） goods.specs=[item,item,item]
-// 7、服务器返回的数据结构 item={name:'颜色',values:[{valueName:'红色',selected:true},{valueName:'蓝色',disabled: true}]}
-// 7、服务器返回的数据结构 item={name:'产地',values:[{valueName:'美国',selected:false},{valueName:'中国',disabled: false}]}
+// 7、Array.reduce() 参数1回调，参数2起始值
+// 7、例如：Array.reduce((p,c)=>{return p+c}, 累计起始值)
+// 7、回调形参p是上一次累计的值，初次是就是累计起始值（如果起始值是空字符串，则需要trim()清除前后空格）
+// 7、回调形参c是遍历到某一项的值
+// 7、上面使用该方法拼接的specsText格式为："颜色: 蓝色 尺寸: 10cm 产地: 中国"
+
+// 8、服务器返回的数据结构（全部库存） goods.skus=[item,item,item]
+// 8、服务器返回的数据结构（全部库存） item={id:'121323',inventory: 99983, price: "128.00", oldPrice: "200.00", specs:[]}
+// 8、服务器返回的数据结构（对应skuid的已选中sku） specs=[{name: "颜色", valueName: "蓝色"},{name: "尺寸", valueName: "20cm"},{name: "产地", valueName: "中国"}]
+// 8、服务器返回的数据结构（可选的sku列表） goods.specs=[item,item,item]
+// 8、服务器返回的数据结构（加上自定义添加的两个状态） item={name:'颜色',values:[{valueName:'红色',selected:true},{valueName:'蓝色',disabled: true}]}
+// 8、服务器返回的数据结构 （加上自定义添加的两个状态）item={name:'产地',values:[{valueName:'美国',selected:false},{valueName:'中国',disabled: false}]}
 
 // js算法库 https://github.com/trekhleb/javascript-algorithms
 // 幂集算法 https://raw.githubusercontent.com/trekhleb/javascript-algorithms/master/src/algorithms/sets/power-set/bwPowerSet.js
