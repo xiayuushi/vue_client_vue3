@@ -27,3 +27,15 @@ export const goodsRelevant = ({ id, limit = 16 }) => {
 export const goodsHot = ({ id, limit = 3, type = 1 }) => {
   return request('/goods/hot', 'get', { id, limit, type })
 }
+
+/**
+ * 获取商品的评价统计信息
+ * @param {String} id - 商品ID （路径参数）
+ */
+export const goodsEvaluate = id => {
+  return request(`/goods/${id}/evaluate`, 'get')
+}
+
+// 1、yapi 平台可提供模拟接口，当后台接口未开发完毕或者没有数据的情况下，可以支持前端的开发。
+// 1、例如 https://mock.boxuegu.com/mock/1175/goods/${id}/evaluate
+// 2、如果是http或者https开头的地址，那么axios实例对象配置了baseURL选项也不会生效，而是以http或者https的为准
