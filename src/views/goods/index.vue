@@ -43,7 +43,7 @@
 
 <script>
 import { useRoute } from 'vue-router'
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, provide } from 'vue'
 import { findGoods } from '@/api/product'
 import GoodsImage from './components/goods_image'
 import GoodsSales from './components/goods_sales'
@@ -75,7 +75,6 @@ export default {
   setup () {
     const goods = getGoods()
     const acceptPayload = sku => {
-      console.log(sku)
       if (sku.skuid) {
         goods.value.oldPrice = sku.oldPrice
         goods.value.price = sku.price
@@ -83,6 +82,9 @@ export default {
       }
     }
     const num = ref(1)
+
+    provide('goods', goods)
+
     return { goods, acceptPayload, num }
   }
 }
@@ -96,7 +98,9 @@ export default {
 // 4、vue3中必须将nextTick从vue中导入后才能使用，这点与ref、watch类似
 // 5、getGoods函数用于获取商品详情数据，注意不要在watch第二参数回调函数体内return接口返回的数据，否则面包屑渲染时拿不到插槽中的节点内容（文字）
 // 6、acceptPayload用于接收goods_sku组件传递过来的用户已选的sku数据，并根据选择的sku修改原价现价库存等
-
+// 7、provide()可以将数据传递给后代组件使用，例如 provide('key', key对应的value)
+// 7、子组件及孙组件能通过inject()接收并使用该数据， 例如 inject('key') 就可以获取到value
+// 8、此处如果不使用provide传递商品数据，使用props传递的话，必须传递两次（先传给子组件goods_tabs.vue再传递给子组件的子组件goods_detail.vue）
 </script>
 
 <style lang="less" scoped>

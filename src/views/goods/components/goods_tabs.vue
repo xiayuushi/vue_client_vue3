@@ -2,7 +2,7 @@
     <div class="goods-tabs">
     <nav>
       <a :class="{ active: componentName === 'GoodsDetail' }" href="javascript:;" @click="componentName='GoodsDetail'">商品详情</a>
-      <a :class="{ active: componentName === 'GoodsComment' }" href="javascript:;" @click="componentName='GoodsComment'">商品评价<span>(500+)</span></a>
+      <a :class="{ active: componentName === 'GoodsComment' }" href="javascript:;" @click="componentName='GoodsComment'">商品评价<span>({{ goods.commentCount }})</span></a>
     </nav>
     <!-- 切换内容的地方 -->
     <component :is="componentName"></component>
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import GoodsDetail from './goods_detail'
 import GoodsComment from './goods_comment'
 
@@ -19,7 +19,8 @@ export default {
   components: { GoodsDetail, GoodsComment },
   setup () {
     const componentName = ref('GoodsDetail')
-    return { componentName }
+    const goods = inject('goods')
+    return { componentName, goods }
   }
 }
 

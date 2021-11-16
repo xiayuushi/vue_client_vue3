@@ -61,6 +61,7 @@ export default {
   &:hover {
     transform: none;
     box-shadow: none;
+    // 此处关闭光标悬浮商品时的上移动画及阴影效果
   }
 }
 </style>
