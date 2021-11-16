@@ -17,3 +17,13 @@ export const findGoods = id => {
 export const goodsRelevant = ({ id, limit = 16 }) => {
   return request('/goods/relevant', 'get', { id, limit })
 }
+
+/**
+* 热销推荐
+* @param {String} id - 商品id
+* @param {Number} limit - 展示数量限制（默认展示3个）
+* @param {Number} type - 热销类型，1为24小时，2为周榜，3为总榜（默认为1）
+*/
+export const goodsHot = ({ id, limit = 3, type = 1 }) => {
+  return request('/goods/hot', 'get', { id, limit, type })
+}

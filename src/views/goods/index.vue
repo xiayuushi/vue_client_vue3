@@ -32,7 +32,10 @@
           <div class="goods-warn"></div>
         </div>
         <!-- 24热榜+专题推荐 -->
-        <div class="goods-aside"></div>
+        <div class="goods-aside">
+          <GoodsHot />
+          <GoodsHot :type="2" />
+        </div>
       </div>
     </div>
   </div>
@@ -48,6 +51,7 @@ import GoodsName from './components/goods_name'
 import GoodsSku from './components/goods_sku'
 import GoodsRelevant from './components/goods_relevant'
 import GoodsTabs from './components/goods_tabs'
+import GoodsHot from './components/goods_hot'
 
 const getGoods = () => {
   const goods = ref(null)
@@ -67,7 +71,7 @@ const getGoods = () => {
 
 export default {
   name: 'GoodsPage',
-  components: { GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsRelevant, GoodsTabs },
+  components: { GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsRelevant, GoodsTabs, GoodsHot },
   setup () {
     const goods = getGoods()
     const acceptPayload = sku => {

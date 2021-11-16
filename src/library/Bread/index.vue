@@ -56,7 +56,10 @@ export default {
   }
 }
 
-// 后续Bread/item.vue的结构会替换此处slot，
-// 因此Bread/item.vue与Bread/index.vue是插槽关系，而不是父子关系
-// 使用深度选择器::v-deep无法作用到BreadItem，因此必须去掉Bread/index.vue中css的scoped作用域才能将类样式作用到Bread/item.vue中
+// 1、后续Bread/item.vue的结构会替换此处slot，
+// 1、因此Bread/item.vue与Bread/index.vue是插槽关系，而不是父子关系
+// 2、父子组件中才能使用::v-deep深度选择器作用到子组件及子组件生成的内容
+// 2、使用深度选择器::v-deep无法作用到BreadItem，因此必须去掉Bread/index.vue中css的scoped作用域才能将类样式作用到Bread/item.vue中
+// 4、深度选择器作用于父子组件间，在父组件中使用深度选择器，能够作用到子组件及子组件生成的样式以便进行样式覆盖
+// 5、vue3中 ::v-deep 已被废弃，虽然能够使用但是会有警告，建议使用 :deep(css选择器) 来替代 ::v-deep
 </style>
