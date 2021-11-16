@@ -4,7 +4,7 @@
       <i class="icon" />
       <span class="title">{{ goodsId ? '同类商品推荐' : '猜你喜欢' }}</span>
     </div>
-    <!-- 此处使用改造后的xxx-carousel.vue -->
+    <!-- 此处使用改造后的xxx_carousel.vue -->
     <XxxCarousel :sliderList="relevantList" style="{ height: 380px }" />
   </div>
 </template>

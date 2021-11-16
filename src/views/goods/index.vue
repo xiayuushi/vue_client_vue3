@@ -27,7 +27,7 @@
       <div class="goods-footer">
         <div class="goods-article">
           <!-- 商品+评价 -->
-          <div class="goods-tabs"></div>
+          <GoodsTabs></GoodsTabs>
           <!-- 注意事项 -->
           <div class="goods-warn"></div>
         </div>
@@ -47,6 +47,7 @@ import GoodsSales from './components/goods_sales'
 import GoodsName from './components/goods_name'
 import GoodsSku from './components/goods_sku'
 import GoodsRelevant from './components/goods_relevant'
+import GoodsTabs from './components/goods_tabs'
 
 const getGoods = () => {
   const goods = ref(null)
@@ -66,7 +67,7 @@ const getGoods = () => {
 
 export default {
   name: 'GoodsPage',
-  components: { GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsRelevant },
+  components: { GoodsImage, GoodsSales, GoodsName, GoodsSku, GoodsRelevant, GoodsTabs },
   setup () {
     const goods = getGoods()
     const acceptPayload = sku => {
