@@ -33,7 +33,16 @@ export const goodsHot = ({ id, limit = 3, type = 1 }) => {
  * @param {String} id - 商品ID （路径参数）
  */
 export const goodsEvaluate = id => {
-  return request(`/goods/${id}/evaluate`, 'get')
+  return request(`https://mock.boxuegu.com/mock/1175/goods/${id}/evaluate`, 'get')
+}
+
+/**
+ * 获取商品的评价分页数据
+ * @param {String} id - 商品ID （路径参数）
+ * @param {Object} params - 商品评价所需的参数集合（具体参数需要参考接口文档）
+ */
+export const goodsEvaluatePage = (id, params) => {
+  return request(`https://mock.boxuegu.com/mock/1175/goods/${id}/evaluate/page`, 'get', params)
 }
 
 // 1、yapi 平台可提供模拟接口，当后台接口未开发完毕或者没有数据的情况下，可以支持前端的开发。
