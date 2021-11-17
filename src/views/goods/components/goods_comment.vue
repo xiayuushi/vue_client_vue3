@@ -31,12 +31,17 @@
           <span>{{ formatNickName(item.member.nickname) }}</span>
         </div>
         <div class="body">
+          <!-- 评分 -->
           <div class="score">
             <i class="iconfont icon-wjx01" v-for="sub in item.score" :key="sub+'1'"></i>
             <i class="iconfont icon-wjx02" v-for="sub in (5-item.score)" :key="sub+'2'"></i>
             <span class="attr">{{ formatSpecs(item.orderInfo.specs) }}</span>
           </div>
+          <!-- 评价内容 -->
           <div class="text">{{ item.content }}</div>
+          <!-- 评论内容晒图 -->
+          <GoodsCommentImage :pictures="item.pictures" v-if="item.pictures.length" />
+          <!-- 时间与点赞数 -->
           <div class="time">
             <span>{{ item.createTime }}</span>
             <span class="zan"><i class="iconfont icon-dianzan"></i>{{ item.praiseCount }}</span>
@@ -50,9 +55,11 @@
 <script>
 import { inject, ref, reactive, watch } from 'vue'
 import { goodsEvaluate, goodsEvaluatePage } from '@/api/product'
+import GoodsCommentImage from './goods_comment_image'
 
 export default {
   name: 'GoodsComment',
+  components: { GoodsCommentImage },
   setup () {
     const commentInfo = ref(null)
     const cIndex = ref(0)
@@ -101,7 +108,7 @@ export default {
     }, { immediate: true })
 
     const formatNickName = nickname => (nickname.substr(0, 1) + '****' + nickname.substr(-1))
-    const formatSpecs = specs => (specs.reduce((p, c) => `${p} ${c.name}: ${c.nameValue}`, ''))
+    const formatSpecs = specs => (specs.reduce((p, c) => `${p} ${c.name}: ${c.nameValue}`, '').trim())
 
     return { commentInfo, tagClick, cIndex, params, changeSort, commentList, formatNickName, formatSpecs }
   }
