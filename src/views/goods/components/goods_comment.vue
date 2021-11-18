@@ -49,6 +49,8 @@
         </div>
       </div>
     </div>
+    <!-- 分页器 -->
+    <XxxPagination />
   </div>
 </template>
 
