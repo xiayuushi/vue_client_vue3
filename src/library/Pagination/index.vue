@@ -14,11 +14,25 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 export default {
   name: 'XxxPagination',
-  setup () {
+  props: {
+    pageSize: {
+      type: Number,
+      default: 10
+    },
+    totalCount: {
+      type: Number,
+      default: 100
+    },
+    defaultPage: {
+      type: Number,
+      default: 1
+    }
+  },
+  setup (props, { emit }) {
     const pageSize = ref(10)
     const totalCount = ref(100)
     const currentPage = ref(5)
@@ -51,15 +65,22 @@ export default {
 
     const changePage = newPage => {
       currentPage.value = newPage
+      emit('onChange', newPage)
     }
 
-    return { currentPage, paginationNumButtons, pagination, changePage }
+    watch(props, () => {
+      pageSize.value = props.pageSize
+      totalCount.value = props.totalCount
+      currentPage.value = props.defaultPage
+    }, { immediate: true })
+
+    return { currentPage, pagination, changePage }
   }
 }
 
 // 1、已知且可预设确定的数据：总条数totalCount、当前页currentPage、页容量pageSize、分页器按钮个数paginationNumButtons
 // 2、通过计算属性求得分页器交互所需的其他数据：分页器起始页按钮元素startPage、分页器结束页按钮元素endPage、总页数totalPage、分页器按钮列表paginationButtonList
-// 3、offsetStep控制按钮往其中一边偏移，而不能是往两边偏移，之所以除以2是为了取中心按钮，只有在中心按钮才能进行某一边的偏移（偏移量是分页器数字按钮总个数的一半向下取整）
+// 3、offsetStep控制按钮往其中一边偏移，而不能是往两边同时偏移，之所以除以2是为了取中心按钮，只有在中心按钮才能进行某一边的偏移（偏移量是分页器数字按钮总个数的一半向下取整）
 // 3、Q1：奇数个按钮，则偏移1/2时，正好偏移好了；例如 5个按钮，则在中心按钮往前或者后偏移2个（2.5向下取整），此时正好
 // 3、Q2：但如果是偶数个按钮，则可让中心按钮往其中一边偏移1/2，然后用分页器总按钮个数paginationNumButtons减一：
 // 3、Q2：例如6个按钮，则不能直接往前或者后偏移3个（因为中心按钮往前或后偏移3个，则分页器总按钮个数是7个，已经超出6个，因此此时需要减一）
@@ -74,6 +95,11 @@ export default {
 // 7、是否显示"下一页"：当前页currentPage是否小于总页数totalPage，是则显示
 // 7、是否显示上一页旁边的"..."：起始页startPage是否大于1，是则显示
 // 7、是否显示下一页旁边的"..."：结束页endPage是否小于总页数totalPage，是则显示
+// 8、封装的分页器需要使用props对外暴露使用参数，外部使用时传入该参数
+// 8、当外部使用分页器组件时，须传入数据（在分页器组件内props接收并监听props数据值的改变进行赋值）
+// 8、当分页器页码发生改变时，应该emit通知父组件更新新页码（此时要将父组件中调用接口时的页码参数params.page进行修改，数据驱动视图更新）
+// 9、props暴露的总条数totalCount需要与接口返回的数据相互关联，才能实现分页数据更新驱动视图更新
+// 9、props暴露的默认选中页defaultPage、页容量pageSize 需要与当前组件的currentPage与pageSize相互关联
 </script>
 
 <style lang="less" scoped>

@@ -50,7 +50,7 @@
       </div>
     </div>
     <!-- 分页器 -->
-    <XxxPagination />
+    <XxxPagination v-if="commentTotalCounts" @on-change="paginationChange" :page-size="params.pageSize" :total-count="commentTotalCounts" :default-page="params.page" />
   </div>
 </template>
 
@@ -73,6 +73,7 @@ export default {
       commentInfo.value = res.result
     })
 
+    const commentTotalCounts = ref(0)
     const commentList = ref([])
     const params = reactive({
       page: 1,
@@ -107,12 +108,17 @@ export default {
     watch(params, async () => {
       const res = await goodsEvaluatePage(goods.value.id, params)
       commentList.value = res.result.items
+      commentTotalCounts.value = res.result.counts
     }, { immediate: true })
 
     const formatNickName = nickname => (nickname.substr(0, 1) + '****' + nickname.substr(-1))
     const formatSpecs = specs => (specs.reduce((p, c) => `${p} ${c.name}: ${c.nameValue}`, '').trim())
 
-    return { commentInfo, tagClick, cIndex, params, changeSort, commentList, formatNickName, formatSpecs }
+    const paginationChange = newPage => {
+      params.page = newPage
+    }
+
+    return { commentInfo, tagClick, cIndex, params, changeSort, commentList, formatNickName, formatSpecs, commentTotalCounts, paginationChange }
   }
 }
 
