@@ -3,6 +3,8 @@
 // import More from './More'
 // import Bread from './Bread'
 // import BreadItem from './Bread/item'
+
+import Message from './Message/index.js'
 import defaultImg from '@/assets/images/200.png'
 
 const autoImportVuefiles = require.context('./', true, /\.vue$/) // 批量导入所有的.vue文件
@@ -21,6 +23,11 @@ export default {
       app.component(componentItem.name, componentItem)
     })
     defineDirective(app)
+
+    // 挂载到全局实例上
+    // 后续在选项API中可以使用this.$message()调用
+    // 后续在组合API中可以从currentInstance()中解构proxy，使用proxy.$message()调用 （不推荐以这种方式调用，不太方便）
+    app.config.globalProperties.$message = Message
   }
 }
 
@@ -93,7 +100,7 @@ const defineDirective = app => {
 // D1、vue2中大部分的挂载或注册都是在vue上进行的
 // D1、vue3中所有的挂载注册都是在createApp()创建的app上进行扩展的，app提供 component directive 函数
 
-// D1、vue2中挂载原型 是在vue.prototype上进行挂载
+// D2、vue2中挂载原型 是在vue.prototype上进行挂载
 // D2、vue3如果要挂载原型 是在 app.config.globalProperties上进行挂载
 
 // D3、vue2有全局或者局部过滤器

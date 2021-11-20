@@ -70,7 +70,7 @@
 
 <script>
 import { useRouter } from 'vue-router'
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, getCurrentInstance } from 'vue'
 import { Form, Field } from 'vee-validate'
 import veeSchema from '@/utils/vee_validate_schema'
 
@@ -81,6 +81,7 @@ export default {
     const target = ref(null)
     const router = useRouter()
     const isMsgLogin = ref(false)
+    const { proxy } = getCurrentInstance()
     const form = reactive({
       isAgree: false,
       mobile: null,
@@ -106,12 +107,11 @@ export default {
     const login = async () => {
       const res = await target.value.validate()
       console.log(res)
-      if (res) {
-        router.push('/')
-      }
+
+      proxy.$message({ type: 'success', text: 'success' })
     }
 
-    return { isMsgLogin, form, schema, target, login }
+    return { isMsgLogin, form, schema, target, login, router }
   }
 }
 
@@ -142,7 +142,6 @@ export default {
 // 11、vee-validate提供重置表单校验规则的方法 resetForm()
 // 11、const target=ref(null); <Form ref="target" /> 然后监听表单切换时 target.value.resetForm() 重置表单的校验规则
 // 12、vee-validate提供全局验证的方法 validate() 该方法返回一个Promise对象，通过.then()可以获取表单验证的布尔值结果（true则表示全局验证成功）
-// 12、
 
 // N1、如果不使用外部js文件作为校验规则对象，则可以直接在组件内定义校验规则对象 例如：const schema={ mobile(value){ if(!value){ return '手机号不能为空...' } } }
 // N2、总之，校验规则对象是用于Form标签的validation-schema属性，内部字段与接口所需参数一致，会用于Field标签的name属性
