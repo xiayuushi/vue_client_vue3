@@ -212,6 +212,11 @@ export default {
 // N8、ref属性绑定的是元素则可以取dom，绑定的是组件则可以获取组件实例
 // N9、全局表单验证返回的是true或者false，因此直接拿返回值可以做if判断条件，但局部验证返回的是字符串或者true，因此必须使用严格全等true来做if的判断条件
 // N10、useIntervalFn()必须配置第三参数 { immediate: false }，否则验证码会从 -1 开始
+
+// N11、vee-validate的Form组件的三个方法
+// 1、Form组件的dom.setFieldError('某个Field标签的name属性值'，错误提示)   >>>用于输出单条规则验证的错误提示
+// 2、Form组件的dom.validate().then(res=>res就是表单全局效验的结果)  >>>用于全局表单验证
+// 3、Form组件的dom.resetForm( ) 用于切换表单时重置所有已验证的表单规则 >>>用于重置表单规则
 </script>
 
 <style lang="less" scoped>
