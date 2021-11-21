@@ -15,10 +15,10 @@
           <div class="input">
             <i class="iconfont icon-user"></i>
             <!-- 此处使用vee-validate导出的Field替换原生的input表单元素标签 -->
-            <Field :class="{ error: errors.mobile }" type="text" placeholder="请输入用户名或手机号" v-model="form.mobile" name="mobile" />
+            <Field :class="{ error: errors.account }" type="text" placeholder="请输入用户名或手机号" v-model="form.account" name="account" />
           </div>
           <!-- 验证出错的提示文案 -->
-          <div class="error" v-if="errors.mobile"><i class="iconfont icon-warning" />{{ errors.mobile }}</div>
+          <div class="error" v-if="errors.account"><i class="iconfont icon-warning" />{{ errors.account }}</div>
         </div>
         <div class="form-item">
           <div class="input">
@@ -39,8 +39,8 @@
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-code"></i>
-            <Field type="password" placeholder="请输入验证码" v-model="form.code" name="code" />
-            <span class="code">发送验证码</span>
+            <Field type="text" placeholder="请输入验证码" v-model="form.code" name="code" />
+            <span class="code" @click="sendCode">{{ time === 0 ? '发送验证码' : `请${ time }后再试` }}</span>
           </div>
           <div class="error" v-if="errors.code"><i class="iconfont icon-warning" />{{ errors.code }}</div>
         </div>
@@ -69,24 +69,30 @@
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
-import { ref, reactive, watch, getCurrentInstance } from 'vue'
-import { Form, Field } from 'vee-validate'
+import Message from '@/library/Message/index.js'
 import veeSchema from '@/utils/vee_validate_schema'
+import { useStore } from 'vuex'
+import { Form, Field } from 'vee-validate'
+import { useIntervalFn } from '@vueuse/core'
+import { useRoute, useRouter } from 'vue-router'
+import { ref, reactive, watch, onUnmounted } from 'vue'
+import { accountLogin, getLoginCode, mobileLogin } from '@/api/user'
 
 export default {
   name: 'LoginForm',
   components: { Form, Field },
   setup () {
     const target = ref(null)
+    const store = useStore()
+    const route = useRoute()
     const router = useRouter()
     const isMsgLogin = ref(false)
-    const { proxy } = getCurrentInstance()
     const form = reactive({
       isAgree: false,
       mobile: null,
       code: null,
-      password: null
+      password: null,
+      account: null
     })
 
     const schema = {
@@ -105,13 +111,59 @@ export default {
     })
 
     const login = async () => {
-      const res = await target.value.validate()
-      console.log(res)
-
-      proxy.$message({ type: 'success', text: 'success' })
+      const valid = await target.value.validate()
+      if (valid) {
+        let res = null
+        try {
+          if (isMsgLogin.value) {
+            const { mobile, code } = form
+            res = await mobileLogin({ mobile, code })
+          } else {
+            const { account, password } = form
+            res = await accountLogin({ account, password })
+          }
+          const { id, avatar, nickname, account, mobile, token } = res.result
+          store.commit('user/SETUSER', { id, avatar, nickname, account, mobile, token })
+          Message({ type: 'success', text: '登录成功' })
+          router.push(route.query.redirect || '/')
+        } catch (e) {
+          if (e.response.data) {
+            Message({ type: 'error', text: e.response.data.message || '登录失败' })
+          }
+        }
+      }
     }
 
-    return { isMsgLogin, form, schema, target, login, router }
+    const time = ref(0)
+    const { pause, resume } = useIntervalFn(() => {
+      time.value--
+      if (time.value <= 0) {
+        pause()
+      }
+    }, 1000, { immediate: false })
+    onUnmounted(() => pause())
+
+    const sendCode = async () => {
+      const valid = schema.mobile(form.mobile)
+      if (valid === true) {
+        try {
+          if (time.value === 0) {
+            await getLoginCode(form.mobile)
+            Message({ type: 'success', text: '验证码发送成功' })
+            time.value = 60
+            resume()
+          }
+        } catch (e) {
+          if (e.response.data) {
+            Message({ type: 'error', text: e.response.data.message || '当前用户不存在' })
+          }
+        }
+      } else {
+        target.value.setFieldError('mobile', valid)
+      }
+    }
+
+    return { isMsgLogin, form, schema, target, login, sendCode, time }
   }
 }
 
@@ -141,7 +193,11 @@ export default {
 
 // 11、vee-validate提供重置表单校验规则的方法 resetForm()
 // 11、const target=ref(null); <Form ref="target" /> 然后监听表单切换时 target.value.resetForm() 重置表单的校验规则
-// 12、vee-validate提供全局验证的方法 validate() 该方法返回一个Promise对象，通过.then()可以获取表单验证的布尔值结果（true则表示全局验证成功）
+// 12、vee-validate提供全局验证的方法 表单dom.validate() 该方法返回一个Promise对象，通过.then()可以获取表单验证的布尔值结果（true则表示全局验证成功）
+// 12、vee-validate提供局部验证出错时的提示方法 表单dom.setFieldError()，参数1验证字段，参数2错误信息 例如：表单dom.setFieldError('mobile',局部表单验证返回的结果)
+
+// 13、useIntervalFn() 第一参数回调，第二参数是间隔数毫秒（默认是1000毫秒1秒钟），第三参数是对象（其中immediate属性值是布尔值，表示是否立即开启计时器）
+// 13、返回的对象属性pause是暂停函数、resume是开始函数
 
 // N1、如果不使用外部js文件作为校验规则对象，则可以直接在组件内定义校验规则对象 例如：const schema={ mobile(value){ if(!value){ return '手机号不能为空...' } } }
 // N2、总之，校验规则对象是用于Form标签的validation-schema属性，内部字段与接口所需参数一致，会用于Field标签的name属性
@@ -154,6 +210,8 @@ export default {
 // N7、此处使用template标签作为表单项form-item（Field的父容器），因此采用v-if来做表单切换
 // N7、v-if会销毁移除dom，因此只需还原Form绑定的数据（form对象）即可，无需调用vee-validate的重置方法重置校验规则（但添加上重置方法也可以）
 // N8、ref属性绑定的是元素则可以取dom，绑定的是组件则可以获取组件实例
+// N9、全局表单验证返回的是true或者false，因此直接拿返回值可以做if判断条件，但局部验证返回的是字符串或者true，因此必须使用严格全等true来做if的判断条件
+// N10、useIntervalFn()必须配置第三参数 { immediate: false }，否则验证码会从 -1 开始
 </script>
 
 <style lang="less" scoped>

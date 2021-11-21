@@ -24,8 +24,8 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   res => res.data,
   err => {
-    const fullPath = encodeURIComponent(router.current.value.fullPath)
     if (err.response && err.response.status === 401) {
+      const fullPath = encodeURIComponent(router.current.value.fullPath)
       store.commit('SETUSER', {})
       router.push('/login?redirect=' + fullPath)
     }
@@ -33,16 +33,8 @@ instance.interceptors.response.use(
   }
 )
 
-function _instance (payload) {
-  return new Promise((resolve, reject) => {
-    instance(payload)
-      .then(res => resolve(res))
-      .catch(err => console.log(err))
-  })
-}
-
 export default (url, method, val) => {
-  return _instance({
+  return instance({
     url,
     method,
     [method.toLowerCase() === 'get' ? 'params' : 'data']: val
@@ -53,4 +45,4 @@ export default (url, method, val) => {
 // 2、vue2中可以在.js中使用 router.current.fullPath获取完整的含参数的路由信息
 // 3、vue3中 router.current已经被ref()包装成一个响应式数据，取值须经过'.value' 因此router.current.value.fullPath才能取完整的路由信息
 // 4、路径中如果有特殊字符会影响 router.query 获取路由参数， 因此必须使用 原生JS的recodeURIComponent()对路由参数进行转义
-// 5、定义_instance函数让自定义封装的api出错时，不让其在控制台抛错
+// 5、获取fullPath的代码必须放在401判断逻辑内，否则后续在登录表单中出错时try-catch无法获取错误信息
