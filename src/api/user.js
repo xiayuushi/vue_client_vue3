@@ -29,4 +29,14 @@ export const mobileLogin = ({ mobile, code }) => {
   return request('/login/code', 'post', { mobile, code })
 }
 
+/**
+* QQ登录
+* @param {String} unionId - 第三方登录惟一标识 （QQ登录SDK中OpenAPI获取的openId）
+* @param {Number} source -  注册来源，1为pc，2为webapp，3为微信小程序，4为Android，5为ios，6为qq，7为微信
+* @return: Promise
+*/
+export const userQQLogin = (unionId, source = 6) => {
+  return request('/login/social', 'post', { unionId, source })
+}
+
 // 1、当前文件是与用户相关的接口

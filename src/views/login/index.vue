@@ -20,6 +20,8 @@
 
 <script>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 import LoginForm from './components/login_form'
 import LoginHeader from './components/login_header'
 import LoginFooter from './components/login_footer'
@@ -29,6 +31,11 @@ export default {
   components: { LoginHeader, LoginFooter, LoginForm },
   setup () {
     const type = ref('account')
+
+    const route = useRoute()
+    const store = useStore()
+    store.commit('user/SETREDIRECT', route.query.redirect)
+
     return { type }
   }
 }
