@@ -59,7 +59,11 @@
       <a @click="login" href="javascript:;" class="btn">登录</a>
     </Form>
     <div class="action">
-      <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
+      <!-- QQ登录 -->
+      <!-- <span id="qqLoginBtn"></span> -->
+      <a href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback">
+        <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
+      </a>
       <div class="url">
         <a href="javascript:;">忘记密码</a>
         <a href="javascript:;">免费注册</a>
@@ -69,13 +73,14 @@
 </template>
 
 <script>
+import QC from 'qc'
 import Message from '@/library/Message/index.js'
 import veeSchema from '@/utils/vee_validate_schema'
 import { useStore } from 'vuex'
 import { Form, Field } from 'vee-validate'
 import { useIntervalFn } from '@vueuse/core'
 import { useRoute, useRouter } from 'vue-router'
-import { ref, reactive, watch, onUnmounted } from 'vue'
+import { ref, reactive, watch, onMounted, onUnmounted } from 'vue'
 import { accountLogin, getLoginCode, mobileLogin } from '@/api/user'
 
 export default {
@@ -163,6 +168,8 @@ export default {
       }
     }
 
+    onMounted(() => QC.Login({ btnId: 'qqLoginBtn' }))
+
     return { isMsgLogin, form, schema, target, login, sendCode, time }
   }
 }
@@ -217,6 +224,25 @@ export default {
 // 1、Form组件的dom.setFieldError('某个Field标签的name属性值'，错误提示)   >>>用于输出单条规则验证的错误提示
 // 2、Form组件的dom.validate().then(res=>res就是表单全局效验的结果)  >>>用于全局表单验证
 // 3、Form组件的dom.resetForm( ) 用于切换表单时重置所有已验证的表单规则 >>>用于重置表单规则
+
+// N12、使用qq登录作为项目的第三方登录
+// st1、需要在QQ互联上进行身份认证，创建应用并审核通过
+// st2、需要修改本地host，让vue-cli服务器能够访问线上IP域名（qq登录必须使用qq互联中审核通过的回调地址）
+// st3、在项目惟一静态页public/index.html中引入QQ互联SDK并添加两个属性
+// st3、例如 <script src="http://connect.qq.com/qc_jssdk.js" data-appid="审核通过获得的的appid" data-redirecturi="审核通过获得的回调地址" />
+// st4、webpack忽略非模块化安装的QQ登录SDK，在vue.config.js添加 configureWebpack: { externals: { qc: 'QC' } }
+// st5、参考QQ互联SDK的使用方法，放置QQ登录按钮（在组件中使用）
+// st5、1 在组件某个结构中准备一个空的span标签，设置id属性为'qqLoginBtn'
+// st5、2 在组件在导入 import QC from 'qc'
+// st5、3 在onMounted周期在初始化，即 QC.Login({ btnId: 'qqLoginBtn' })
+// st5、4 此时就会生成一个QQ登录的span标签，目的就是得到该标签中的跳转地址
+// st6、审查元素，查看生成的QQ登录链接的a标签，复制其window.open()跳转地址
+// st6、1 注释st5A中onMounted的代码
+// st6、2 将生成的span标签注释掉并改成如下
+// 例如：<a href="粘贴地址"><img src="生成的qq登录图片地址" /></a>
+// 注意：st5A的目的就是为了得到那个生成的a标签window.open()第一参数地址
+// 另外，如果不经过st6这么做，只会在一个浏览器小窗口打开，这并不是我们想要的
+// st7、使用st2中localhost中配置的地址+当前项目对应的端口号才能进行QQ登录
 </script>
 
 <style lang="less" scoped>
