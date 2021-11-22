@@ -42,7 +42,13 @@
 
 <script>
 export default {
-  name: 'LoginCallbackPatch'
+  name: 'LoginCallbackPatch',
+  props: {
+    unionId: {
+      type: String,
+      default: ''
+    }
+  }
 }
 </script>
 

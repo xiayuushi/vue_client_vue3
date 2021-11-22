@@ -39,4 +39,24 @@ export const userQQLogin = (unionId, source = 6) => {
   return request('/login/social', 'post', { unionId, source })
 }
 
+/**
+* QQ绑定账号时的短信验证码
+* @param {String} mobile - 手机号
+* @return: Promise
+*/
+export const userQQBindCode = mobile => {
+  return request('/login/social/code', 'get', { mobile })
+}
+
+/**
+* QQ登录绑定账号
+* @param {String} unionId - 第三方登录惟一标识 （QQ登录SDK中OpenAPI获取的openId）
+* @param {String} mobile - 手机号
+* @param {String} code - 验证码
+* @return: Promise
+*/
+export const userQQbindAccount = ({ unionId, mobile, code }) => {
+  return request('/login/social/bind', 'post', { unionId, mobile, code })
+}
+
 // 1、当前文件是与用户相关的接口

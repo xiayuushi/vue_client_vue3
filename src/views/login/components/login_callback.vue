@@ -17,10 +17,10 @@
       </a>
     </nav>
     <div class="tab-content" v-if="hasAccount">
-      <LoginCallbackBind />
+      <LoginCallbackBind :unionId="unionId" />
     </div>
     <div class="tab-content" v-else>
-      <LoginCallbackPatch />
+      <LoginCallbackPatch :unionId="unionId" />
     </div>
   </section>
   <LoginFooter />
@@ -43,13 +43,15 @@ export default {
   name: 'LoginCallback',
   components: { LoginHeader, LoginFooter, LoginCallbackBind, LoginCallbackPatch },
   setup () {
-    const isBind = ref(false)
+    const unionId = ref(null)
+    const isBind = ref(true)
     const hasAccount = ref(true)
     const store = useStore()
     const router = useRouter()
 
     if (QC.Login.check()) {
       QC.Login.getMe(async (openId) => {
+        unionId.value = openId
         try {
           const res = await userQQLogin(openId)
           const { id, avatar, nickname, account, mobile, token } = res.result
@@ -64,7 +66,7 @@ export default {
         }
       })
     }
-    return { isBind, hasAccount }
+    return { isBind, hasAccount, unionId }
   }
 }
 

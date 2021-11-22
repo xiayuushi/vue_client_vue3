@@ -225,7 +225,16 @@ export default {
 // 2、Form组件的dom.validate().then(res=>res就是表单全局效验的结果)  >>>用于全局表单验证
 // 3、Form组件的dom.resetForm( ) 用于切换表单时重置所有已验证的表单规则 >>>用于重置表单规则
 
-// N12、使用qq登录作为项目的第三方登录
+// N12、vee-validate的Form组件与Field组件的属性
+// 1、Form组件的 :validation-schema 用于绑定验证规则对象
+// 2、Form组件的 v-slot="{ errors }" 用于渲染各验证字段出错时的文本
+// 2、通过 errors点出Field标签中name对应的某个验证字段 例如errors.mobile就是该手机验证出错时的渲染文本
+// 3、Field组件的 v-model 用于双向数据绑定
+// 4、Field组件的 name 用于指定验证的字段（必须是Form组件中validation-schema绑定的验证规则中的字段）
+// 总之，Form组件与Field组件设置好以上几个属性，当失焦时，就会自动触发vee-validate的某个字段的规则验证
+// 另外，Form组件的dom.setFieldError()是方法逻辑中报错某个验证规则出错，而v-slot针对的是失焦时报某个验证规则存在错误
+
+// N13、使用qq登录作为项目的第三方登录
 // st1、需要在QQ互联上进行身份认证，创建应用并审核通过
 // st2、需要修改本地host，让vue-cli服务器能够访问线上IP域名（qq登录必须使用qq互联中审核通过的回调地址）
 // st3、在项目惟一静态页public/index.html中引入QQ互联SDK并添加两个属性
