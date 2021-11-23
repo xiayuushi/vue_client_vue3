@@ -1,4 +1,4 @@
-// import { userAccountCheck } from '@/api/user'
+import { userAccountCheck } from '@/api/user'
 
 export default {
   account (value) {
@@ -7,13 +7,13 @@ export default {
     return true
   },
 
-  // async accountApi (value) {
-  //   if (!value) return '请输入用户名'
-  //   if (!/^[a-zA-Z]\w{5,19}$/.test(value)) return '字母开头且6-20个字符'
-  //   const data = await userAccountCheck(value)
-  //   if (data.result.valid) return '用户名已存在'
-  //   return true
-  // },
+  async accountApi (value) {
+    if (!value) return '请输入用户名'
+    if (!/^[a-zA-Z]\w{5,19}$/.test(value)) return '字母开头且6-20个字符'
+    const res = await userAccountCheck(value)
+    if (res.result.valid) return '用户名已存在'
+    return true
+  },
 
   password (value) {
     if (!value) return '请输入密码'
@@ -47,3 +47,4 @@ export default {
 
 // 1、当前文件是使用vee-validate做表单校验的校验规则
 // 2、之所以将规则提取整合到一个文件中，是为了后续在使用vee-validate进行表单验证时能够复用
+// 3、vee-validate的规则验证对象，内部的被验证的字段，各函数的第一形参是被验证的字段的值，第二参数是对象（可以解构出form获取被验证的整个表单）
