@@ -102,6 +102,7 @@ export default {
 
     const schema = {
       isAgree: veeSchema.isAgree,
+      account: veeSchema.account,
       mobile: veeSchema.mobile,
       code: veeSchema.code,
       password: veeSchema.password
@@ -109,6 +110,7 @@ export default {
 
     watch(isMsgLogin, () => {
       form.isAgree = false
+      form.account = null
       form.mobile = null
       form.code = null
       form.password = null

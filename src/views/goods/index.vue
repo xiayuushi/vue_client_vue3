@@ -18,7 +18,7 @@
           <GoodsName :goods="goods" />
           <GoodsSku :goods="goods" skuid="1369155865461919746" @change="acceptPayload" />
           <XxxNumbox v-model="num" label="数量" :max="goods.inventory" />
-          <XxxButton type="primary" style="margin-top: 20px">加入购物车</XxxButton>
+          <XxxButton type="primary" style="margin-top: 20px" @click="insertCart">加入购物车</XxxButton>
         </div>
       </div>
       <!-- 商品推荐 | 猜你喜欢-->
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { ref, watch, nextTick, provide } from 'vue'
 import { findGoods } from '@/api/product'
@@ -54,6 +55,7 @@ import GoodsRelevant from './components/goods_relevant'
 import GoodsTabs from './components/goods_tabs'
 import GoodsHot from './components/goods_hot'
 import GoodsWarn from './components/goods_warn'
+import Message from '@/library/Message/index.js'
 
 const getGoods = () => {
   const goods = ref(null)
@@ -82,11 +84,35 @@ export default {
         goods.value.price = sku.price
         goods.value.inventory = sku.inventory
       }
+      currentSku.value = sku
     }
     const num = ref(1)
     provide('goods', goods)
 
-    return { goods, acceptPayload, num }
+    const store = useStore()
+    const currentSku = ref(null)
+    const insertCart = () => {
+      if (currentSku.value && currentSku.value.skuid) {
+        console.log(1234)
+        store.dispatch('cart/insertCart', {
+          selected: true,
+          isEffective: true,
+          count: num.value,
+          id: goods.value.id,
+          name: goods.value.name,
+          picture: goods.value.mainPictures[0],
+          skuId: currentSku.value.skuid,
+          price: currentSku.value.price,
+          nowPrice: currentSku.value.price,
+          stock: currentSku.value.inventory,
+          attrsText: currentSku.value.specsText
+        }).then(() => Message({ type: 'success', text: '添加购物车成功' }))
+      } else {
+        Message({ text: '请选择完整的规格' })
+      }
+    }
+
+    return { goods, acceptPayload, num, insertCart }
   }
 }
 
@@ -102,6 +128,10 @@ export default {
 // 7、provide()可以将数据传递给后代组件使用，例如 provide('key', key对应的value)
 // 7、子组件及孙组件能通过inject()接收并使用该数据， 例如 inject('key') 就可以获取到value
 // 8、此处如果不使用provide传递商品数据，使用props传递的话，必须传递两次（先传给子组件goods_tabs.vue再传递给子组件的子组件goods_detail.vue）
+// 9、必须选择完整的商品规格后才能加入购物车, currentSku用于记录选择后的sku，当currentSku存在且有值时表示选择的sku商品规格是完整的，此时就可以进行添加购物操作
+// 10、需要约定添加到购物车的每个商品对象需要哪些数据字段，必须与添加购物车接口返回的数据字段保持一致
+// 10、例如：id, skuId, name, attrsText, picture, price, nowPrice, selected, stock, count, isEffective
+// 11、insertCart函数内store.dispatch()之所以能够.then()是因为在vuex中实例化Promise处理过vuex的actions中的insertCart方法
 </script>
 
 <style lang="less" scoped>

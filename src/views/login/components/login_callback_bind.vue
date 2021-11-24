@@ -119,6 +119,8 @@ export default {
 }
 
 // 1、QC.api('get_user_info')是QQ登录SDK提供的API用于获取QQ用户信息
+// 2、为方便后续完善页面逻辑的开展，提供解绑API，直接在浏览器地址栏输入即可
+// 2、例如：http://pcapi-xiaotuxian-front-devtest.itheima.net/login/social/unbind?mobile=13800000003
 </script>
 
 <style lang="less" scoped>

@@ -100,7 +100,6 @@ export default {
             if (err.response.data) {
               Message({ type: 'error', text: err.response.data.message || '发送验证码失败' })
             }
-            console.log(store, router)
           }
         }
       } else {

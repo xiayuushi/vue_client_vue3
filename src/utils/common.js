@@ -2,6 +2,7 @@ import AppNav from '../components/AppNav'
 import AppHeader from '../components/AppHeader'
 import AppFooter from '../components/AppFooter'
 import AppHeaderNav from '../components/AppHeaderNav'
+import AppHeaderCart from '../components/AppHeaderCart'
 import AppHeaderSticky from '../components/AppHeaderSticky'
 
 export default function (Vue, options) {
@@ -9,6 +10,7 @@ export default function (Vue, options) {
   Vue.component(AppHeader.name, AppHeader)
   Vue.component(AppFooter.name, AppFooter)
   Vue.component(AppHeaderNav.name, AppHeaderNav)
+  Vue.component(AppHeaderCart.name, AppHeaderCart)
   Vue.component(AppHeaderSticky.name, AppHeaderSticky)
 }
 
