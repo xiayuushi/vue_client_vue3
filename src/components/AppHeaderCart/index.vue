@@ -39,6 +39,7 @@ export default {
   setup () {
     const store = useStore()
     const cartValidList = store.getters['cart/validList']
+    store.dispatch('cart/queryCart')
 
     return { cartValidList }
   }

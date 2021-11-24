@@ -1,3 +1,5 @@
+import { getLatestCartGoods } from '@/api/cart'
+
 export default {
   namespaced: true,
   state () {
@@ -14,6 +16,14 @@ export default {
         state.list.splice(sameIndex, 1)
       }
       state.list.unshift(payload)
+    },
+    UPDATECART (state, payload) {
+      const updateItem = state.list.find(item => item.skuId === payload.skuId)
+      for (const key in payload) {
+        if (payload[key] !== null && payload[key] !== undefined && payload[key] !== '') {
+          updateItem[key] = payload[key]
+        }
+      }
     }
   },
   actions: {
@@ -27,6 +37,26 @@ export default {
           resolve()
         }
       })
+    },
+    queryCart (store) {
+      return new Promise((resolve, reject) => {
+        if (store.rootState.user.profile.token) {
+          // 已登录
+        } else {
+          // 未登录
+          const skuidList = store.state.list.map(item => item.skuId)
+          const promiseList = []
+          skuidList.forEach(item => {
+            promiseList.push(getLatestCartGoods(item))
+          })
+          Promise.all(promiseList).then(resList => {
+            resList.forEach((res, i) => {
+              store.commit('UPDATECART', { skuId: skuidList[i], ...res.result })
+            })
+            resolve()
+          }).catch(err => reject(err))
+        }
+      })
     }
   },
   getters: {
@@ -37,7 +67,7 @@ export default {
       return getters.validList.reduce((p, c) => p + c.count, 0)
     },
     validListTotalPrice (state, getters) {
-      return getters.validList.reduce((p, c) => p + c.nowPrice * 100 * c.count, 0) / 100
+      return getters.validList.reduce((p, c) => p + parseInt(c.nowPrice) * 100 * c.count, 0) / 100
     }
   }
 }
@@ -60,3 +90,14 @@ export default {
 
 // 9、validList购物车列表的有效商品，validListCounts计算购物车列表的有效商品总数量，validListTotalPrice计算购物车列表的有效商品总价格
 // 10、validListTotalPrice计算购物车列表的有效商品总价格时之所以先'*100'再'/100'是为了计算浮点数，且保留两位小数
+
+// 11、UPDATECART用于更新购物车，形参payload就是传入的用于更新购物车列表中某个商品的更新对象，updateItem就是购物车商品列表中的某个待更新商品
+// 11、传入的更新对象，字段不固定（或者说可能不完整），例如购物车某个商品中有10个字段，有可能payload实参传入的只有6个字段
+// 11、传入的更新对象，字段的值可能不合法，例如购物车商品中有count字段用于表示商品数量，有可能payload实参传入的count属性是个undefined
+// 11、因此必须确保更新购物车数据时，传入的payload中必须有skuId，另外传入的字段的值必须有效
+// 11、for..in..传入哪些字段就改哪些字段，另外resList遍历时它可以溯源至store.state.list这个数组，因此可以它们两者的索引是一致的，也可以用于取数组中skuId的值
+// 12、getLatestCartGoods接口用于更新最新的购物车数据，每次只能更新一个sku商品
+// 12、queryCart用于查询购物车商品，也需要分两种情况（未登录时本地购物车信息 、已登录时购物车信息）
+// 12、正因为每次只能查询一个sku商品，购物车列表可能有多个sku商品，因此需要等到所有接口返回数据再将结果一并返回，此时就需要使用Promise.all()
+
+// N1、在vuex中的actions中去区分用户未登录与已登录时购物车的情况，在组件上只需调用actions即可
