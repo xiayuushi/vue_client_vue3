@@ -93,7 +93,6 @@ export default {
     const currentSku = ref(null)
     const insertCart = () => {
       if (currentSku.value && currentSku.value.skuid) {
-        console.log(1234)
         store.dispatch('cart/insertCart', {
           selected: true,
           isEffective: true,

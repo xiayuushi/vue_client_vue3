@@ -1,12 +1,12 @@
 <template>
   <div class="cart">
-    <a class="curr" href="#">
+    <router-link class="curr" to="/cart">
       <i class="iconfont icon-cart"></i><em>{{ $store.getters['cart/validListCounts'] }}</em>
-    </a>
+    </router-link>
     <!-- 弹层 -->
-    <div class="layer">
+    <div class="layer" v-if="$store.getters['cart/validList'].length && $route.path !== '/cart'">
       <div class="list">
-        <div class="item" v-for="item in cartValidList" :key="item.skuId">
+        <div class="item" v-for="item in $store.getters['cart/validList']" :key="item.skuId">
           <RouterLink to="">
             <img :src="item.picture" alt="">
             <div class="center">
@@ -18,7 +18,7 @@
               <p class="count">x{{ item.count }}</p>
             </div>
           </RouterLink>
-          <i class="iconfont icon-close-new"></i>
+          <i class="iconfont icon-close-new" @click="deleteCartGoods(item.skuId)"></i>
         </div>
       </div>
       <div class="foot">
@@ -34,18 +34,29 @@
 
 <script>
 import { useStore } from 'vuex'
+import Message from '@/library/Message/index.js'
+
 export default {
   name: 'AppHeaderCart',
   setup () {
     const store = useStore()
-    const cartValidList = store.getters['cart/validList']
     store.dispatch('cart/queryCart')
 
-    return { cartValidList }
+    const deleteCartGoods = async (skuId) => {
+      try {
+        await store.dispatch('cart/deleteCart', skuId)
+        Message({ type: 'success', text: '购物车商品删除成功' })
+      } catch (error) {
+        console.dir(error)
+        Message({ type: 'error', text: '购物车商品删除失败' })
+      }
+    }
+
+    return { deleteCartGoods }
   }
 }
 
-// 1、插值语法中可以直接通过$store点出vuex的数据，但是属性中不能，因此需要在setup中通过useStore()取出再给组件的属性使用
+// 1、不要通过useStore()取出再给组件的属性使用，这样子取出的vuex的getter不能用于实时更新视图
 </script>
 
 <style lang="less" scoped>

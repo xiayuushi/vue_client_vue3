@@ -24,6 +24,10 @@ export default {
           updateItem[key] = payload[key]
         }
       }
+    },
+    DELETECART (state, skuId) {
+      const deleteIndex = state.list.findIndex(item => item.skuId === skuId)
+      state.list.splice(deleteIndex, 1)
     }
   },
   actions: {
@@ -55,6 +59,17 @@ export default {
             })
             resolve()
           }).catch(err => reject(err))
+        }
+      })
+    },
+    deleteCart (store, payload) {
+      return new Promise((resolve, reject) => {
+        if (store.rootState.user.profile.token) {
+          // 已登录
+        } else {
+          // 未登录
+          store.commit('DELETECART', payload)
+          resolve()
         }
       })
     }
