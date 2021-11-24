@@ -184,24 +184,25 @@ export default {
 // 5、导入vee_validate_schema.js文件用于校验Form，只需在Form中添加使用validation-schema属性并绑定导入的校验规则对象
 
 // 6、给Form标签使用作用域插槽定义错误对象
-// 6、例如 <Form :validation-schema="校验规则对象" v-slot="{ errors }"></Form> 后续校验Field组件的"mobile"字段时，可使用 errors.mobile来获取错误提示
+// 6、例如 Form标签设置 :validation-schema="校验规则对象" v-slot="{ errors }" 后续校验Field组件的"mobile"字段时，可使用 errors.mobile来获取错误提示
 // 6、作用域插槽 v-slot="{ errors }"是对象解构写法，从整个对象中解构出验证出错时的信息，其中errors是固定字段
-// 6、通常会在Field标签下方使用某个结构来输出错误提示 <div v-if="errors.mobile">{{ errors.mobile }}</div>
+// 6、通常会在Field标签下方使用某个结构来输出错误提示 例如div标签设置v-if="errors.mobile" 文本节点中使用{{ errors.mobile }}渲染
 
 // 7、给Field标签添加v-model属性进行双向数据绑定（不使用v-model，校验规则不会生效）、添加name属性绑定校验字段（类似于element-ui中的rules对象对应某个具体的规则name）
-// 7、例如 <Field v-model="form.mobile" name="mobile" />
-// 8、如果是使用Field去替换自定义组件的表单元素，必须使用as属性，例如 原先将checkbox封装成了组件，此时想使用Field替换它，则 <Field as="自定义组件名" v-model="双向绑定的数据" name="校验的某个字段" />
+// 7、例如 Field标签设置 v-model="form.mobile" name="mobile"
+// 8、如果是使用Field去替换自定义组件的表单元素，必须使用as属性
+// 8、例如 原先将checkbox封装成了组件，此时想使用Field替换它，则 Field标签设置 as="自定义组件名" v-model="双向绑定的数据" name="校验的某个字段"
 
 // 9、vee-validate做校验，它的使用方式类似于element-ui的表单校验（Field的name属性类似于ElementUI中的rules对象对应的name属性）
-// 9、<Form :validation-schema="校验规则对象" v-slot="{error}"><Field /></Form>
-// 9、<Field as="自定义组件" v-model="双向绑定数据" name="校验规则对象中的某个字段名" /> 其中as属性是依情况可选的
+// 9、Form标签设置 :validation-schema="校验规则对象" v-slot="{error}"
+// 9、Field标签设置 as="自定义组件" v-model="双向绑定数据" name="校验规则对象中的某个字段名"  其中as属性是依情况可选的
 
 // 10、使用vee-validate做表单校验时，
 // 10.1、必须确保Form标签有validation-schema属性，且不要写错属性，否则失焦时不会触发规则字段验证
 // 10.2、必须确保Field标签有v-model与name属性，否则编译会报错
 
 // 11、vee-validate提供重置表单校验规则的方法 resetForm()
-// 11、const target=ref(null); <Form ref="target" /> 然后监听表单切换时 target.value.resetForm() 重置表单的校验规则
+// 11、const target=ref(null); Form标签设置ref="target"绑定dom 然后监听表单切换时 可以使用 target.value.resetForm() 重置表单的校验规则
 // 12、vee-validate提供全局验证的方法 表单dom.validate() 该方法返回一个Promise对象，通过.then()可以获取表单验证的布尔值结果（true则表示全局验证成功）
 // 12、vee-validate提供局部验证出错时的提示方法 表单dom.setFieldError()，参数1验证字段，参数2错误信息 例如：表单dom.setFieldError('mobile',局部表单验证返回的结果)
 
@@ -240,7 +241,7 @@ export default {
 // st1、需要在QQ互联上进行身份认证，创建应用并审核通过
 // st2、需要修改本地host，让vue-cli服务器能够访问线上IP域名（qq登录必须使用qq互联中审核通过的回调地址）
 // st3、在项目惟一静态页public/index.html中引入QQ互联SDK并添加两个属性
-// st3、例如 <script src="http://connect.qq.com/qc_jssdk.js" data-appid="审核通过获得的的appid" data-redirecturi="审核通过获得的回调地址" />
+// st3、例如 script标签设置 src="http://connect.qq.com/qc_jssdk.js" data-appid="审核通过获得的的appid" data-redirecturi="审核通过获得的回调地址"
 // st4、webpack忽略非模块化安装的QQ登录SDK，在vue.config.js添加 configureWebpack: { externals: { qc: 'QC' } }
 // st5、参考QQ互联SDK的使用方法，放置QQ登录按钮（在组件中使用）
 // st5、1 在组件某个结构中准备一个空的span标签，设置id属性为'qqLoginBtn'
@@ -250,7 +251,7 @@ export default {
 // st6、审查元素，查看生成的QQ登录链接的a标签，复制其window.open()跳转地址
 // st6、1 注释st5A中onMounted的代码
 // st6、2 将生成的span标签注释掉并改成如下
-// 例如：<a href="粘贴地址"><img src="生成的qq登录图片地址" /></a>
+// 例如：a标签设置 href="粘贴地址" ，内部img标签设置src="生成的qq登录图片地址"
 // 注意：st5A的目的就是为了得到那个生成的a标签window.open()第一参数地址
 // 另外，如果不经过st6这么做，只会在一个浏览器小窗口打开，这并不是我们想要的
 // st7、使用st2中localhost中配置的地址+当前项目对应的端口号才能进行QQ登录

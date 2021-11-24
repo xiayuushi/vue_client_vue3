@@ -5,10 +5,10 @@
       <i class="iconfont icon-cart"></i><em>{{ $store.getters['cart/validListCounts'] }}</em>
     </router-link>
     <!-- 头部购物车弹层 -->
-    <div class="layer" v-if="$store.getters['cart/validList'].length && $route.path !== '/cart'">
+    <div class="layer" v-if="$store.getters['cart/validListCounts'] > 0 && $route.path !== '/cart'">
       <div class="list">
         <div class="item" v-for="item in $store.getters['cart/validList']" :key="item.skuId">
-          <RouterLink :to="`/product/${item.id}`">
+          <RouterLink :to="`/product/${ item.id }`">
             <img :src="item.picture" alt="">
             <div class="center">
               <p class="name ellipsis-2">{{ item.name }}</p>
@@ -25,7 +25,7 @@
       <div class="foot">
         <div class="total">
           <p>共 {{ $store.getters['cart/validListCounts'] }} 件商品</p>
-          <p>&yen;{{ $store.getters['cart/validListTotalPrice'] }}</p>
+          <p>&yen;{{ $store.getters['cart/validListAmount'] }}</p>
         </div>
         <XxxButton type="plain" @click="$router.push('/cart')">去购物车结算</XxxButton>
       </div>

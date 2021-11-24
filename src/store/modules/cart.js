@@ -81,8 +81,23 @@ export default {
     validListCounts (state, getters) {
       return getters.validList.reduce((p, c) => p + c.count, 0)
     },
-    validListTotalPrice (state, getters) {
-      return getters.validList.reduce((p, c) => p + parseInt(c.nowPrice) * 100 * c.count, 0) / 100
+    validListAmount (state, getters) {
+      return getters.validList.reduce((p, c) => p + Math.round(c.nowPrice * 100) * c.count, 0) / 100
+    },
+    invalidList (state) {
+      return state.list.filter(item => item.stock <= 0 || !item.isEffective)
+    },
+    selectedList (state, getters) {
+      return getters.validList.filter(item => item.selected)
+    },
+    selectedListCounts (state, getters) {
+      return getters.selectedList.reduce((p, c) => p + c.count, 0)
+    },
+    selectedListAmount (state, getters) {
+      return getters.selectedList.reduce((p, c) => p + Math.round(c.nowPrice * 100) * c.count, 0) / 100
+    },
+    isCheckedAll (state, getters) {
+      return getters.selectedList.length !== 0 && getters.selectedList.length === getters.validList.length
     }
   }
 }
@@ -103,8 +118,8 @@ export default {
 // 8、Q1 存在（说明购物车已有相同规格的商品），从购物车列表删除之前的同规格商品，累加之前的数量，重新添加该规格商品并挪到购物车列表最前面（最新添加的商品放到最前面）
 // 8、Q1 不存在（说明该规格的商品是初次添加），直接添加移到到购物车列表的最前边
 
-// 9、validList购物车列表的有效商品，validListCounts计算购物车列表的有效商品总数量，validListTotalPrice计算购物车列表的有效商品总价格
-// 10、validListTotalPrice计算购物车列表的有效商品总价格时之所以先'*100'再'/100'是为了计算浮点数，且保留两位小数
+// 9、validList购物车列表的有效商品，validListCounts计算购物车列表的有效商品总数量，validListAmount计算购物车列表的有效商品总价格
+// 10、validListAmount计算购物车列表的有效商品总价格时之所以先'*100'再'/100'是为了计算浮点数，且保留两位小数
 
 // 11、UPDATECART用于更新购物车，形参payload就是传入的用于更新购物车列表中某个商品的更新对象，updateItem就是购物车商品列表中的某个待更新商品
 // 11、传入的更新对象，字段不固定（或者说可能不完整），例如购物车某个商品中有10个字段，有可能payload实参传入的只有6个字段
