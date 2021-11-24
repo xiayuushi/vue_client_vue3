@@ -7,6 +7,7 @@ const SubCategory = () => import('@/views/category/sub')
 const Goods = () => import('@/views/goods')
 const Login = () => import('@/views/login')
 const LoginCallback = () => import('@/views/login/components/login_callback')
+const Cart = () => import('@/views/cart')
 
 const routes = [
   {
@@ -16,7 +17,8 @@ const routes = [
       { path: '/', component: Home },
       { path: '/category/:id', component: TopCategory },
       { path: '/category/sub/:id', component: SubCategory },
-      { path: '/product/:id', component: Goods }
+      { path: '/product/:id', component: Goods },
+      { path: '/cart', component: Cart }
     ]
   },
   {
