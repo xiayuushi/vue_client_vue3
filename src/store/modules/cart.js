@@ -72,6 +72,16 @@ export default {
           resolve()
         }
       })
+    },
+    updateCart (store, payload) {
+      return new Promise((resolve, reject) => {
+        if (store.rootState.user.profile.token) {
+          // 已登录
+        } else {
+          store.commit('UPDATECART', payload)
+          resolve()
+        }
+      })
     }
   },
   getters: {
@@ -126,6 +136,7 @@ export default {
 // 11、传入的更新对象，字段的值可能不合法，例如购物车商品中有count字段用于表示商品数量，有可能payload实参传入的count属性是个undefined
 // 11、因此必须确保更新购物车数据时，传入的payload中必须有skuId，另外传入的字段的值必须有效
 // 11、for..in..传入哪些字段就改哪些字段，另外resList遍历时它可以溯源至store.state.list这个数组，因此可以它们两者的索引是一致的，也可以用于取数组中skuId的值
+// 11、因为for..in..遍历对象也可以筛选不合法数据字段，当符合购物车商品的数据字段才能够正确改值，后续传参必须传商品相关字段否则一律修改不成功
 // 12、getLatestCartGoods接口用于更新最新的购物车数据，每次只能更新一个sku商品
 // 12、queryCart用于查询购物车商品，也需要分两种情况（未登录时本地购物车信息 、已登录时购物车信息）
 // 12、正因为每次只能查询一个sku商品，购物车列表可能有多个sku商品，因此需要等到所有接口返回数据再将结果一并返回，此时就需要使用Promise.all()

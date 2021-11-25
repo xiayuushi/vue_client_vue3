@@ -19,8 +19,8 @@
           </thead>
           <!-- 有效商品 -->
           <tbody>
-            <tr v-for="item in $store.getters['cart/validList']" :key="item.id">
-              <td><XxxCheckbox :modelValue="item.selected" /></td>
+            <tr v-for="item in $store.getters['cart/validList']" :key="item.skuId">
+              <td><XxxCheckbox :modelValue="item.selected" @change="$event => checkedCurrentItem($event, item.skuId)" /></td>
               <td>
                 <div class="goods">
                   <RouterLink :to="`/product/${ item.id }`"><img :src="item.picture" alt=""></RouterLink>
@@ -48,7 +48,7 @@
           <!-- 无效商品 -->
           <tbody v-if="$store.getters['cart/invalidList'].length">
             <tr><td colspan="6"><h3 class="tit">失效商品</h3></td></tr>
-            <tr v-for="item in $store.getters['cart/invalidList']" :key="item.id">
+            <tr v-for="item in $store.getters['cart/invalidList']" :key="item.skuId">
               <td><XxxCheckbox style="color:#eee;" /></td>
               <td>
                 <div class="goods">
@@ -91,13 +91,19 @@
 </template>
 
 <script>
+import { useStore } from 'vuex'
 import GoodRelevant from '../goods/components/goods_relevant'
 
 export default {
   name: 'CartPage',
   components: { GoodRelevant },
   setup () {
-    return { }
+    const store = useStore()
+    const checkedCurrentItem = (isChecked, skuId) => {
+      store.dispatch('cart/updateCart', { selected: isChecked, skuId })
+    }
+
+    return { checkedCurrentItem }
   }
 }
 
@@ -105,7 +111,14 @@ export default {
 // 1、因为v-model在给子组件赋值的同时也会修改父组件的值，而当前组件中使用的XxxCheckbox控制是否选中的数据是来源于vuex，而vuex的数据只能通过mutations定义方法来修改
 // 2、使用vuex控制的数据，如果需要双向数据绑定，那只能拆分v-model，如 当前组件使用的 XxxCheckbox 与 XxxNumber
 // 3、vue3中v-model可以拆分为modelValue与@update:modelValue
-// 4、Math.round(item.nowPrice * 100) * item.count / 100 是计算单个选中商品的金额时四舍五入保留两位小数
+// 4、在自定义封装XxxCheckbox组件时暴露了@change事件，就是用于改值的，此时因为绑定的是vuex的数据，因此不能直接用拆分为@update:modelValue改值，但是可以通过@change事件对应的方法改值
+// 5、封装XxxCheckbox时@change有提供传参，使用该组件时可以直接通过$event取参，但是使用该组件时如果@change对应的方法fn也需要传参，此时可以通过"($event)=>fn($event, fn自己的传参)"的形式兼顾两者的传参
+// 6、vuex中mutations方法UPDATECART使用for..in..对传参做了要求，必须传入符合购物车商品的字段，因此传参时必须对应，否则无法成功传参
+// 6、因此checkedCurrentItem()在传入由XxxCheckbox组件@change的$event的值(上面的形参isChecked)时，必须给vuex中购物车商品对应的selected字段，否则单选框无法进行单选操作
+// 7、Math.round(item.nowPrice * 100) * item.count / 100 是计算单个选中商品的金额时四舍五入保留两位小数
+// 8、购物车商品单选需要区分两种情况：Q1未登录字体修改的是vuex的数据 Q2登录状态修改的是服务器的数据
+
+// N1、@xxx="($event)=>fn($event,payload)" 表示接收子组件emit("xxx")传递过来的参数$event的同时，还传入了fn自己的参数payload，后续在实现fn函数时可以拿到这两个传参
 </script>
 
 <style lang="less" scoped>
