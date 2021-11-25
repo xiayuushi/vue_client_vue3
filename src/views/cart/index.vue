@@ -94,6 +94,7 @@
 <script>
 import { useStore } from 'vuex'
 import CartNone from './components/cart_none'
+import Confirm from '@/library/Confirm/index.js'
 import GoodRelevant from '../goods/components/goods_relevant'
 
 export default {
@@ -108,7 +109,11 @@ export default {
       store.dispatch('cart/checkAllCart', { selected: isChecked })
     }
     const deleteCart = (skuId) => {
-      store.dispatch('cart/deleteCart', skuId)
+      Confirm({ text: '是否从购物车中删除该商品？' })
+        .then(() => {
+          store.dispatch('cart/deleteCart', skuId)
+        })
+        .catch(() => console.log('取消删除'))
     }
     return { checkOne, checkAll, deleteCart }
   }

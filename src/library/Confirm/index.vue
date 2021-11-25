@@ -19,6 +19,7 @@
 
 <script>
 import { ref, onMounted } from 'vue'
+import XxxButton from '../Button'
 
 export default {
   name: 'XxxConfirm',
@@ -30,20 +31,33 @@ export default {
     text: {
       type: String,
       default: ''
+    },
+    cancelCallback: {
+      type: Function
+    },
+    submitCallback: {
+      type: Function
     }
   },
-  setup () {
+  components: { XxxButton },
+  setup (props) {
     const visibile = ref(false)
     onMounted(() => (visibile.value = true))
     const cancel = () => {
-      visibile.value = false
+      props.cancelCallback()
     }
     const submit = () => {
-      visibile.value = false
+      props.submitCallback()
     }
     return { visibile, cancel, submit }
   }
 }
+
+// 1、如果提示"Failed to resolve component: XxxButton"则需要额外导入并注册XxxButton组件
+// 1、因为XxxButton组件是挂载到vue实例上的（即生成的button组件dom是vue根容器#app容器下的元素）
+// 1、而当前封装的组件如果是采用函数式调用，则生成的dom并非是vue的渲染容器#app的子元素（这点可以打开浏览器控制台查看）
+// 1、因此需要在当前组件额外导入并注册XxxButton（它只是vue应用实例上的通用全局组件，但当前Confirm组件如果是函数式调用则无法享受Vue全局共享的'便利'）
+// 2、组合API(setup周期函数)中必须调用props.submitCallback()才能调用Confirm模块中Promise对象定义的submitCallback()销毁组件，cancelCallback也是一样
 </script>
 
 <style lang="less" scoped>

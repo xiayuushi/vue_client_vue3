@@ -5,6 +5,7 @@
 // import BreadItem from './Bread/item'
 
 import Message from './Message/index.js'
+import Confirm from './Confirm/index.js'
 import defaultImg from '@/assets/images/200.png'
 
 const autoImportVuefiles = require.context('./', true, /\.vue$/) // 批量导入所有的.vue文件
@@ -28,6 +29,8 @@ export default {
     // 后续在选项API中可以使用this.$message()调用
     // 后续在组合API中可以从currentInstance()中解构proxy，使用proxy.$message()调用 （不推荐以这种方式调用，不太方便）
     app.config.globalProperties.$message = Message
+
+    app.config.globalProperties.$confirm = Confirm
   }
 }
 
