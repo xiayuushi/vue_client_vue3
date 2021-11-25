@@ -19,6 +19,7 @@
           </thead>
           <!-- 有效商品 -->
           <tbody>
+            <tr v-if="$store.getters['cart/validList'].length === 0"><td colspan="6"><CartNone /></td></tr>
             <tr v-for="item in $store.getters['cart/validList']" :key="item.skuId">
               <td><XxxCheckbox :modelValue="item.selected" @change="$event => checkOne($event, item.skuId)" /></td>
               <td>
@@ -40,7 +41,7 @@
               <td class="tc"><p class="f16 red">&yen;{{ Math.round(item.nowPrice * 100) * item.count / 100 }}</p></td>
               <td class="tc">
                 <p><a href="javascript:;">移入收藏夹</a></p>
-                <p><a class="green" href="javascript:;">删除</a></p>
+                <p><a class="green" href="javascript:;" @click="deleteCart(item.skuId)">删除</a></p>
                 <p><a href="javascript:;">找相似</a></p>
               </td>
             </tr>
@@ -63,7 +64,7 @@
               <td class="tc">{{ item.count }}</td>
               <td class="tc"><p>&yen;{{ Math.round(item.nowPrice * 100) * item.count / 100 }}</p></td>
               <td class="tc">
-                <p><a class="green" href="javascript:;">删除</a></p>
+                <p><a class="green" href="javascript:;" @click="deleteCart(item.skuId)">删除</a></p>
                 <p><a href="javascript:;">找相似</a></p>
               </td>
             </tr>
@@ -92,11 +93,12 @@
 
 <script>
 import { useStore } from 'vuex'
+import CartNone from './components/cart_none'
 import GoodRelevant from '../goods/components/goods_relevant'
 
 export default {
   name: 'CartPage',
-  components: { GoodRelevant },
+  components: { GoodRelevant, CartNone },
   setup () {
     const store = useStore()
     const checkOne = (isChecked, skuId) => {
@@ -105,7 +107,10 @@ export default {
     const checkAll = (isChecked) => {
       store.dispatch('cart/checkAllCart', { selected: isChecked })
     }
-    return { checkOne, checkAll }
+    const deleteCart = (skuId) => {
+      store.dispatch('cart/deleteCart', skuId)
+    }
+    return { checkOne, checkAll, deleteCart }
   }
 }
 
