@@ -9,7 +9,7 @@
         <table>
           <thead>
             <tr>
-              <th width="120"><XxxCheckbox :modelValue="$store.getters['cart/isCheckedAll']">全选</XxxCheckbox></th>
+              <th width="120"><XxxCheckbox :modelValue="$store.getters['cart/isCheckedAll']" @change="checkAll">全选</XxxCheckbox></th>
               <th width="400">商品信息</th>
               <th width="220">单价</th>
               <th width="180">数量</th>
@@ -20,7 +20,7 @@
           <!-- 有效商品 -->
           <tbody>
             <tr v-for="item in $store.getters['cart/validList']" :key="item.skuId">
-              <td><XxxCheckbox :modelValue="item.selected" @change="$event => checkedCurrentItem($event, item.skuId)" /></td>
+              <td><XxxCheckbox :modelValue="item.selected" @change="$event => checkOne($event, item.skuId)" /></td>
               <td>
                 <div class="goods">
                   <RouterLink :to="`/product/${ item.id }`"><img :src="item.picture" alt=""></RouterLink>
@@ -73,7 +73,7 @@
       <!-- 操作栏 -->
       <div class="action">
         <div class="batch">
-          <XxxCheckbox :modelValue="$store.getters['cart/isCheckedAll']">全选</XxxCheckbox>
+          <XxxCheckbox :modelValue="$store.getters['cart/isCheckedAll']" @change="checkAll">全选</XxxCheckbox>
           <a href="javascript:;">删除商品</a>
           <a href="javascript:;">移入收藏夹</a>
           <a href="javascript:;">清空失效商品</a>
@@ -99,11 +99,13 @@ export default {
   components: { GoodRelevant },
   setup () {
     const store = useStore()
-    const checkedCurrentItem = (isChecked, skuId) => {
+    const checkOne = (isChecked, skuId) => {
       store.dispatch('cart/updateCart', { selected: isChecked, skuId })
     }
-
-    return { checkedCurrentItem }
+    const checkAll = (isChecked) => {
+      store.dispatch('cart/checkAllCart', { selected: isChecked })
+    }
+    return { checkOne, checkAll }
   }
 }
 
@@ -114,7 +116,7 @@ export default {
 // 4、在自定义封装XxxCheckbox组件时暴露了@change事件，就是用于改值的，此时因为绑定的是vuex的数据，因此不能直接用拆分为@update:modelValue改值，但是可以通过@change事件对应的方法改值
 // 5、封装XxxCheckbox时@change有提供传参，使用该组件时可以直接通过$event取参，但是使用该组件时如果@change对应的方法fn也需要传参，此时可以通过"($event)=>fn($event, fn自己的传参)"的形式兼顾两者的传参
 // 6、vuex中mutations方法UPDATECART使用for..in..对传参做了要求，必须传入符合购物车商品的字段，因此传参时必须对应，否则无法成功传参
-// 6、因此checkedCurrentItem()在传入由XxxCheckbox组件@change的$event的值(上面的形参isChecked)时，必须给vuex中购物车商品对应的selected字段，否则单选框无法进行单选操作
+// 6、因此checkOne()在传入由XxxCheckbox组件@change的$event的值(上面的形参isChecked)时，必须给vuex中购物车商品对应的selected字段，否则单选框无法进行单选操作
 // 7、Math.round(item.nowPrice * 100) * item.count / 100 是计算单个选中商品的金额时四舍五入保留两位小数
 // 8、购物车商品单选需要区分两种情况：Q1未登录字体修改的是vuex的数据 Q2登录状态修改的是服务器的数据
 

@@ -82,6 +82,18 @@ export default {
           resolve()
         }
       })
+    },
+    checkAllCart (store, payload) {
+      return new Promise((resolve, reject) => {
+        if (store.rootState.user.profile.token) {
+          // 已登录
+        } else {
+          store.getters.validList.forEach(item => {
+            store.commit('UPDATECART', { skuId: item.skuId, selected: payload.selected })
+          })
+          resolve()
+        }
+      })
     }
   },
   getters: {
