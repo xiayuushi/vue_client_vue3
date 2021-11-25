@@ -1,5 +1,5 @@
-import { createVNode, render } from 'vue'
 import Message from './index.vue'
+import { createVNode, render } from 'vue'
 
 const div = document.createElement('div')
 div.setAttribute('class', 'xxx-message-container')

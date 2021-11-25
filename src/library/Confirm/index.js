@@ -1,5 +1,5 @@
-import Confirm from './index.vue'
 import { h, render } from 'vue'
+import Confirm from './index.vue'
 
 const div = document.createElement('div')
 div.setAttribute('class', 'xxx-confirm-container')
