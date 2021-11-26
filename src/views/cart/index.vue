@@ -28,7 +28,7 @@
                   <div>
                     <p class="name ellipsis">{{ item.name }}</p>
                     <!-- 选择规格组件 -->
-                    <CartSku :skuId="item.skuId" :attrsText="item.attrsText" />
+                    <CartSku :skuId="item.skuId" :attrsText="item.attrsText" @changeCartSku="$event => updateCartSku($event, item.skuId)" />
                   </div>
                 </div>
               </td>
@@ -129,7 +129,11 @@ export default {
     const changeCount = (count, skuId) => {
       store.dispatch('cart/updateCart', { count, skuId })
     }
-    return { checkOne, checkAll, deleteCart, batchDeleteCart, changeCount }
+
+    const updateCartSku = (newSku, oldSkuId) => {
+      store.dispatch('cart/updateCartSku', { newSku, oldSkuId })
+    }
+    return { checkOne, checkAll, deleteCart, batchDeleteCart, changeCount, updateCartSku }
   }
 }
 
@@ -149,6 +153,7 @@ export default {
 // N2、@xxx="($event)=>fn($event,payload)" 参数位置必须对应
 // N2、如果接收的参数$event放在第一参数位置，则第一参数就是子组件emit传递过来的参数；如果接收的参数$event放在第二参数位置，则第二参数就是子组件emit传递过来的参数
 // N2、如果拿到以上参数与vuex中的mutations或者actions中的方法对接，则键名必须与vuex中的方法对应才能正确传参
+// N3、tytyty方法中第一形参newSku是cart_sku.vue组件传递过来的购物车当前选中的SKU数据，第二形参goods是整个SKU数据，需要将第一形参覆盖第二形参，获取最新的SKU信息来达到更新购物车页面的购物车SKU数据的目的
 </script>
 
 <style lang="less" scoped>

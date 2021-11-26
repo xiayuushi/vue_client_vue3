@@ -8,8 +8,8 @@
     <!-- 默认隐藏的弹层 可重选SKU -->
     <div class="layer" v-if="visibile">
       <div class="loading" v-if="loading"></div>
-      <GoodsSku :skuid="skuId" :goods="cartGoodsSku"  v-else />
-      <XxxButton type="primary" size="mini" style="margin-left:60px" v-if="!loading">确定</XxxButton>
+      <GoodsSku :skuid="skuId" :goods="cartGoodsSku" @change="getCurrentChangeSku"  v-else />
+      <XxxButton type="primary" size="mini" @click="submit" style="margin-left:60px" v-if="!loading">确定</XxxButton>
     </div>
   </div>
 </template>
@@ -33,7 +33,7 @@ export default {
     }
   },
   components: { GoodsSku },
-  setup (props) {
+  setup (props, { emit }) {
     const visibile = ref(false)
     const show = () => {
       visibile.value = true
@@ -55,12 +55,26 @@ export default {
       loading.value = false
     })
 
-    return { visibile, toggle, target, cartGoodsSku, loading }
+    const currentSelectedSku = ref(null)
+    const getCurrentChangeSku = (Sku) => {
+      currentSelectedSku.value = Sku
+    }
+
+    const submit = () => {
+      if (currentSelectedSku.value && currentSelectedSku.value.skuid && currentSelectedSku.value.skuid !== props.skuId) {
+        emit('changeCartSku', currentSelectedSku.value)
+        hide()
+      }
+    }
+
+    return { visibile, toggle, target, cartGoodsSku, loading, getCurrentChangeSku, submit }
   }
 }
 
 // 1、购物车页面的重选SKU规格时，需要两个数据specs（可选规格集合）与skus（SKU集合），可以调用接口拿到并传递给GoodsSku组件
 // 2、购物车页面的重选SKU规格时如果需要默认选中当前sku，则必须传入skuid属性
+// 3、currentSelectedSku用于接收GoodsSku组件emit()传递过来的当前已选的SKU信息，但是该SKU信息只包含skuid、inventory、price、oldPrice、specsText这5个字段
+// 4、submit函数用于将接收到的更改后的SKU传递给父组件，后续会在父组件中调用vuex定义的actions方法去更新购物车SKU数据
 </script>
 
 <style lang="less" scoped>

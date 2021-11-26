@@ -106,6 +106,20 @@ export default {
           resolve()
         }
       })
+    },
+    updateCartSku (store, { newSku, oldSkuId }) {
+      return new Promise((resolve, reject) => {
+        if (store.rootState.user.profile.token) {
+          // 已登录
+        } else {
+          const oldGoods = store.state.list.find(item => item.skuId === oldSkuId)
+          store.commit('DELETECART', oldSkuId)
+          const { skuid: skuId, inventory: stock, price: nowPrice, oldPrice: price, specsText: attrsText } = newSku
+          const newGoods = { ...oldGoods, skuId, stock, nowPrice, price, attrsText }
+          store.commit('INSERTCART', newGoods)
+          resolve()
+        }
+      })
     }
   },
   getters: {
@@ -166,3 +180,5 @@ export default {
 // 12、正因为每次只能查询一个sku商品，购物车列表可能有多个sku商品，因此需要等到所有接口返回数据再将结果一并返回，此时就需要使用Promise.all()
 
 // N1、在vuex中的actions中去区分用户未登录与已登录时购物车的情况，在组件上只需调用actions即可
+// N2、const { x: xx } = obj 表示从obj中解构出x属性赋值给xx，即等同于 const xx = obj.x
+// N3、匹配旧的SKU对应的商品，删除旧SKU商品，转成与vuex中定义的与接口一致的字段合并成最新的SKU数据（合并的SKU数据会形成新的SKU商品），重新加入购物车
