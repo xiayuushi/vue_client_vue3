@@ -95,12 +95,12 @@ export default {
         }
       })
     },
-    batchDeleteCart (store) {
+    batchDeleteCart (store, isClearInvalid) {
       return new Promise((resolve, reject) => {
         if (store.rootState.user.profile.token) {
           // 已登录
         } else {
-          store.getters.selectedList.forEach(item => {
+          store.getters[isClearInvalid ? 'invalidList' : 'selectedList'].forEach(item => {
             store.commit('DELETECART', item.skuId)
           })
           resolve()

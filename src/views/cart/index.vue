@@ -75,9 +75,9 @@
       <div class="action">
         <div class="batch">
           <XxxCheckbox :modelValue="$store.getters['cart/isCheckedAll']" @change="checkAll">全选</XxxCheckbox>
-          <a href="javascript:;" @click="batchDeleteCart">删除商品</a>
+          <a href="javascript:;" @click="batchDeleteCart()">删除商品</a>
           <a href="javascript:;">移入收藏夹</a>
-          <a href="javascript:;">清空失效商品</a>
+          <a href="javascript:;" @click="batchDeleteCart(true)">清空失效商品</a>
         </div>
         <div class="total">
           共 {{ $store.getters['cart/validListCounts'] }} 件商品，已选择 {{ $store.getters['cart/selectedListCounts'] }} 件，商品合计：
@@ -110,19 +110,19 @@ export default {
       store.dispatch('cart/checkAllCart', { selected: isChecked })
     }
     const deleteCart = (skuId) => {
-      Confirm({ text: '是否从购物车中删除该商品？' })
+      Confirm({ text: '是否删除当前商品？' })
         .then(() => {
           store.dispatch('cart/deleteCart', skuId)
         })
-        .catch(() => console.log('取消删除'))
+        .catch(err => console.log(err))
     }
-    const batchDeleteCart = () => {
-      Confirm({ text: '是否批量删除购物车中选中的商品？' })
+    const batchDeleteCart = (isClearInvalid) => {
+      Confirm({ text: `是否${isClearInvalid ? '清空失效的' : '删除已选中的'}购物车商品？` })
         .then(() => {
-          store.dispatch('cart/batchDeleteCart')
-          Message({ type: 'success', text: '批量删除成功' })
+          store.dispatch('cart/batchDeleteCart', isClearInvalid)
+          Message({ type: 'success', text: '操作成功' })
         })
-        .catch(() => console.log('取消批量删除'))
+        .catch(err => console.log(err))
     }
     return { checkOne, checkAll, deleteCart, batchDeleteCart }
   }
@@ -138,6 +138,7 @@ export default {
 // 6、因此checkOne()在传入由XxxCheckbox组件@change的$event的值(上面的形参isChecked)时，必须给vuex中购物车商品对应的selected字段，否则单选框无法进行单选操作
 // 7、Math.round(item.nowPrice * 100) * item.count / 100 是计算单个选中商品的金额时四舍五入保留两位小数
 // 8、购物车商品单选需要区分两种情况：Q1未登录字体修改的是vuex的数据 Q2登录状态修改的是服务器的数据
+// 9、batchDeleteCart()不传参或者传false则做批量删除购物车中选中的商品；传参true表示清空购物车中的无效商品（同一个方法根据传参实现类似的功能）
 
 // N1、@xxx="($event)=>fn($event,payload)" 表示接收子组件emit("xxx")传递过来的参数$event的同时，还传入了fn自己的参数payload，后续在实现fn函数时可以拿到这两个传参
 </script>
