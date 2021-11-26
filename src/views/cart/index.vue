@@ -28,6 +28,7 @@
                   <div>
                     <p class="name ellipsis">{{ item.name }}</p>
                     <!-- 选择规格组件 -->
+                    <CartSku :skuId="item.skuId" :attrsText="item.attrsText" />
                   </div>
                 </div>
               </td>
@@ -94,13 +95,14 @@
 <script>
 import { useStore } from 'vuex'
 import CartNone from './components/cart_none'
+import CartSku from './components/cart_sku'
 import Confirm from '@/library/Confirm/index.js'
 import Message from '@/library/Message/index.js'
 import GoodRelevant from '../goods/components/goods_relevant'
 
 export default {
   name: 'CartPage',
-  components: { GoodRelevant, CartNone },
+  components: { GoodRelevant, CartNone, CartSku },
   setup () {
     const store = useStore()
     const checkOne = (isChecked, skuId) => {

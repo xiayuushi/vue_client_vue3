@@ -8,3 +8,12 @@ import request from '@/utils/request'
 export const getLatestCartGoods = (skuId) => {
   return request(`/goods/stock/${skuId}`, 'get')
 }
+
+/**
+* 商品信息-库存价格是否有效（支持本地购物车）
+* @param {String} skuId - 商品SKUID
+* @return: Promise
+*/
+export const getCartGoodsSku = (skuId) => {
+  return request(`/goods/sku/${skuId}`, 'get')
+}
