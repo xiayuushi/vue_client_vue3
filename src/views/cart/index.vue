@@ -36,7 +36,7 @@
                 <p v-if="item.price > item.nowPrice">比加入时降价 <span class="red">&yen;{{ item.price-item.nowPrice }}</span></p>
               </td>
               <td class="tc">
-                <XxxNumbox :modelvalue="item.count" />
+                <XxxNumbox :modelValue="item.count" :max="item.stock" @change="$event => changeCount($event, item.skuId)" />
               </td>
               <td class="tc"><p class="f16 red">&yen;{{ Math.round(item.nowPrice * 100) * item.count / 100 }}</p></td>
               <td class="tc">
@@ -124,7 +124,10 @@ export default {
         })
         .catch(err => console.log(err))
     }
-    return { checkOne, checkAll, deleteCart, batchDeleteCart }
+    const changeCount = (count, skuId) => {
+      store.dispatch('cart/updateCart', { count, skuId })
+    }
+    return { checkOne, checkAll, deleteCart, batchDeleteCart, changeCount }
   }
 }
 
@@ -138,9 +141,12 @@ export default {
 // 6、因此checkOne()在传入由XxxCheckbox组件@change的$event的值(上面的形参isChecked)时，必须给vuex中购物车商品对应的selected字段，否则单选框无法进行单选操作
 // 7、Math.round(item.nowPrice * 100) * item.count / 100 是计算单个选中商品的金额时四舍五入保留两位小数
 // 8、购物车商品单选需要区分两种情况：Q1未登录字体修改的是vuex的数据 Q2登录状态修改的是服务器的数据
-// 9、batchDeleteCart()不传参或者传false则做批量删除购物车中选中的商品；传参true表示清空购物车中的无效商品（同一个方法根据传参实现类似的功能）
+// 9、batchDeleteCart()不传参或者传false则做批量删除购物车中选中的商品（不传参也必须加括号调用）；传参true表示清空购物车中的无效商品（同一个方法根据传参实现类似的功能）
 
 // N1、@xxx="($event)=>fn($event,payload)" 表示接收子组件emit("xxx")传递过来的参数$event的同时，还传入了fn自己的参数payload，后续在实现fn函数时可以拿到这两个传参
+// N2、@xxx="($event)=>fn($event,payload)" 参数位置必须对应
+// N2、如果接收的参数$event放在第一参数位置，则第一参数就是子组件emit传递过来的参数；如果接收的参数$event放在第二参数位置，则第二参数就是子组件emit传递过来的参数
+// N2、如果拿到以上参数与vuex中的mutations或者actions中的方法对接，则键名必须与vuex中的方法对应才能正确传参
 </script>
 
 <style lang="less" scoped>
