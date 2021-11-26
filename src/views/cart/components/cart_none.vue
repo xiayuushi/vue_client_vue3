@@ -3,7 +3,7 @@
     <img src="@/assets/images/none.png" alt="" />
     <p>购物车内暂时没有商品</p>
     <div class="btn">
-      <XtxButton type="primary" @click="$router.push('/')">继续逛逛</XtxButton>
+      <XxxButton type="primary" @click="$router.push('/')">继续逛逛</XxxButton>
     </div>
   </div>
 </template>

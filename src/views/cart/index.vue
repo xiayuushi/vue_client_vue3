@@ -75,7 +75,7 @@
       <div class="action">
         <div class="batch">
           <XxxCheckbox :modelValue="$store.getters['cart/isCheckedAll']" @change="checkAll">全选</XxxCheckbox>
-          <a href="javascript:;">删除商品</a>
+          <a href="javascript:;" @click="batchDeleteCart">删除商品</a>
           <a href="javascript:;">移入收藏夹</a>
           <a href="javascript:;">清空失效商品</a>
         </div>
@@ -95,6 +95,7 @@
 import { useStore } from 'vuex'
 import CartNone from './components/cart_none'
 import Confirm from '@/library/Confirm/index.js'
+import Message from '@/library/Message/index.js'
 import GoodRelevant from '../goods/components/goods_relevant'
 
 export default {
@@ -115,7 +116,15 @@ export default {
         })
         .catch(() => console.log('取消删除'))
     }
-    return { checkOne, checkAll, deleteCart }
+    const batchDeleteCart = () => {
+      Confirm({ text: '是否批量删除购物车中选中的商品？' })
+        .then(() => {
+          store.dispatch('cart/batchDeleteCart')
+          Message({ type: 'success', text: '批量删除成功' })
+        })
+        .catch(() => console.log('取消批量删除'))
+    }
+    return { checkOne, checkAll, deleteCart, batchDeleteCart }
   }
 }
 

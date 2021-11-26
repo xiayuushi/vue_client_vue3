@@ -94,6 +94,18 @@ export default {
           resolve()
         }
       })
+    },
+    batchDeleteCart (store) {
+      return new Promise((resolve, reject) => {
+        if (store.rootState.user.profile.token) {
+          // 已登录
+        } else {
+          store.getters.selectedList.forEach(item => {
+            store.commit('DELETECART', item.skuId)
+          })
+          resolve()
+        }
+      })
     }
   },
   getters: {
