@@ -1,4 +1,4 @@
-import { getLatestCartGoods, memberCartMerge, memberCart } from '@/api/cart'
+import { getLatestCartGoods, memberCartMerge, memberCart, memberCartDelete } from '@/api/cart'
 
 export default {
   namespaced: true,
@@ -68,9 +68,10 @@ export default {
     deleteCart (store, payload) {
       return new Promise((resolve, reject) => {
         if (store.rootState.user.profile.token) {
-          // 已登录
+          memberCartDelete([payload])
+            .then(() => memberCart())
+            .then(res => (store.commit('SETCART', res.result)))
         } else {
-          // 未登录
           store.commit('DELETECART', payload)
           resolve()
         }
@@ -200,3 +201,5 @@ export default {
 // N4、mergeCart合并购物车一定是登录后才做的，该actions方法只会在登录成功时去调用，因此无需在actions方法内部做判断
 // N5、使用async的函数，其返回值就是一个Promise对象，可以通过.then监听其成功的回调
 // N5、因此actions方法名前使用async后，在组件调用该actions时可以.then()在其触发成功后的进行后续逻辑的处理
+// N6、Promise.then()如果返回的是一个Promise对象，则可以继续使用.then()，并在.then()的回调形参中接收到上一个Promise的返回值
+// N6、例如 Promise.then(()=>return API接口).then(res => 此时res就是API接口的返回数据)

@@ -35,4 +35,9 @@ export const memberCart = () => {
   return request('/member/cart', 'get')
 }
 
+// （登录后）删除购物车商品
+export const memberCartDelete = (ids) => {
+  return request('/member/cart', 'delete', { ids })
+}
+
 // N1、memberCartMerge接口，参数payloadList是一个数组，不要写成  return request('/member/cart/merge', 'post', {payloadList}) 否则服务器会返回500错误
