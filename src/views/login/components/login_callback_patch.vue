@@ -114,8 +114,10 @@ export default {
           const res = await userQQPatchLogin({ unionId: props.unionId, ...form })
           const { id, avatar, nickname, account, mobile, token } = res.result
           store.commit('user/SETUSER', { id, avatar, nickname, account, mobile, token })
-          Message({ type: 'success', text: '完善信息成功' })
-          router.push(store.state.user.redirect || '/')
+          store.dispatch('cart/mergeCart').then(() => {
+            Message({ type: 'success', text: '完善信息成功' })
+            router.push(store.state.user.redirect || '/')
+          })
         } catch (err) {
           if (err.response.data) {
             Message({ type: 'error', text: err.response.data.message || '完善信息失败' })

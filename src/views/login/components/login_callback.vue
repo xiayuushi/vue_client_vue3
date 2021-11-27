@@ -56,8 +56,10 @@ export default {
           const res = await userQQLogin(openId)
           const { id, avatar, nickname, account, mobile, token } = res.result
           store.commit('user/SETUSER', { id, avatar, nickname, account, mobile, token })
-          router.push(store.state.user.redirect || '/')
-          Message({ type: 'success', text: '登录成功' })
+          store.dispatch('cart/mergeCart').then(() => {
+            router.push(store.state.user.redirect || '/')
+            Message({ type: 'success', text: '登录成功' })
+          })
         } catch (err) {
           if (err.response.data) {
             Message({ type: 'error', text: err.response.data.message || '第三方登录失败' })

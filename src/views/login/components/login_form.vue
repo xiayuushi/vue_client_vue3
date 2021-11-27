@@ -131,8 +131,10 @@ export default {
           }
           const { id, avatar, nickname, account, mobile, token } = res.result
           store.commit('user/SETUSER', { id, avatar, nickname, account, mobile, token })
-          Message({ type: 'success', text: '登录成功' })
-          router.push(route.query.redirect || '/')
+          store.dispatch('cart/mergeCart').then(() => {
+            Message({ type: 'success', text: '登录成功' })
+            router.push(route.query.redirect || '/')
+          })
         } catch (e) {
           if (e.response.data) {
             Message({ type: 'error', text: e.response.data.message || '登录失败' })
@@ -255,6 +257,8 @@ export default {
 // 注意：st5A的目的就是为了得到那个生成的a标签window.open()第一参数地址
 // 另外，如果不经过st6这么做，只会在一个浏览器小窗口打开，这并不是我们想要的
 // st7、使用st2中localhost中配置的地址+当前项目对应的端口号才能进行QQ登录
+
+// N14、cart/mergeCart这个actions方法能够使用.then()是因为其在vuex封装时已经使用async进行改造，使用async改造后的代码就是一个Promise对象
 </script>
 
 <style lang="less" scoped>

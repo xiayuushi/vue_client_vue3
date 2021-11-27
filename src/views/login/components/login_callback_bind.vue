@@ -101,8 +101,10 @@ export default {
           const res = await userQQbindAccount({ unionId: props.unionId, mobile: form.mobile, code: form.code })
           const { id, avatar, nickname, account, mobile, token } = res.result
           store.commit('user/SETUSER', { id, avatar, nickname, account, mobile, token })
-          Message({ type: 'success', text: 'QQ绑定账号成功' })
-          router.push(store.state.user.redirect || '/')
+          store.dispatch('cart/mergeCart').then(() => {
+            Message({ type: 'success', text: 'QQ绑定账号成功' })
+            router.push(store.state.user.redirect || '/')
+          })
         } catch (err) {
           console.dir(err)
           if (err.response.data) {

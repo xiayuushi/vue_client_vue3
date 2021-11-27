@@ -1,4 +1,4 @@
-import { getLatestCartGoods } from '@/api/cart'
+import { getLatestCartGoods, memberCartMerge } from '@/api/cart'
 
 export default {
   namespaced: true,
@@ -28,6 +28,9 @@ export default {
     DELETECART (state, skuId) {
       const deleteIndex = state.list.findIndex(item => item.skuId === skuId)
       state.list.splice(deleteIndex, 1)
+    },
+    SETCART (state, payload) {
+      state.list = payload
     }
   },
   actions: {
@@ -120,6 +123,11 @@ export default {
           resolve()
         }
       })
+    },
+    async mergeCart (store) {
+      const payloadList = store.state.list.map(item => ({ skuId: item.skuId, selected: item.selected, count: item.count }))
+      await memberCartMerge(payloadList)
+      store.commit('SETCART', [])
     }
   },
   getters: {
@@ -179,6 +187,16 @@ export default {
 // 12、queryCart用于查询购物车商品，也需要分两种情况（未登录时本地购物车信息 、已登录时购物车信息）
 // 12、正因为每次只能查询一个sku商品，购物车列表可能有多个sku商品，因此需要等到所有接口返回数据再将结果一并返回，此时就需要使用Promise.all()
 
+// 13、mergeCart合并购物车的逻辑：1 调用接口合并本地购物车 2 合并成功清空本地购物车
+// 14、在多个登录渠道调用该actions方法清空购物车
+// 14、例如：账号密码或手机号验证码登录的login.vue、第三方登录已绑定账号login_callback.vue、第三方登录未绑定已注册账号login_callback_bind.vue、第三方登录未注册账号login_callback_patch）
+// 15、在退出登录时则应该调用mutations方法SETCART置空购物车
+// 15、例如：src/components/AppNav.vue中退出登录的逻辑内 store.commit('cart/SETCART')
+// 16、因为vuex做了持久化处理，清空本地购物车则也会把线上购物车清空，以上流程完成后再登录时会发现购物车都是空的，因此需要后续调用接口重新请求购物车列表数据
+
 // N1、在vuex中的actions中去区分用户未登录与已登录时购物车的情况，在组件上只需调用actions即可
 // N2、const { x: xx } = obj 表示从obj中解构出x属性赋值给xx，即等同于 const xx = obj.x
 // N3、匹配旧的SKU对应的商品，删除旧SKU商品，转成与vuex中定义的与接口一致的字段合并成最新的SKU数据（合并的SKU数据会形成新的SKU商品），重新加入购物车
+// N4、mergeCart合并购物车一定是登录后才做的，该actions方法只会在登录成功时去调用，因此无需在actions方法内部做判断
+// N5、使用async的函数，其返回值就是一个Promise对象，可以通过.then监听其成功的回调
+// N5、因此actions方法名前使用async后，在组件调用该actions时可以.then()在其触发成功后的进行后续逻辑的处理
