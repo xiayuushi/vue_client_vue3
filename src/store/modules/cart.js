@@ -102,7 +102,10 @@ export default {
     batchDeleteCart (store, isClearInvalid) {
       return new Promise((resolve, reject) => {
         if (store.rootState.user.profile.token) {
-          // 已登录
+          const skuIdList = store.getters[isClearInvalid ? 'invalidList' : 'selectedList'].map(item => item.skuId)
+          memberCartDelete(skuIdList)
+            .then(() => memberCart(skuIdList))
+            .then(res => store.commit('SETCART', res.result))
         } else {
           store.getters[isClearInvalid ? 'invalidList' : 'selectedList'].forEach(item => {
             store.commit('DELETECART', item.skuId)
@@ -203,3 +206,5 @@ export default {
 // N5、因此actions方法名前使用async后，在组件调用该actions时可以.then()在其触发成功后的进行后续逻辑的处理
 // N6、Promise.then()如果返回的是一个Promise对象，则可以继续使用.then()，并在.then()的回调形参中接收到上一个Promise的返回值
 // N6、例如 Promise.then(()=>return API接口).then(res => 此时res就是API接口的返回数据)
+// N7、batchDeleteCart与deleteCart函数中，如果用户已登录状态，则分别会调用接口删除购物车数据（前者是批量删除、后者是单个删除）
+// N7、删除后会重新调用服务器接口memberCart去请求最新的购物车列表数据，请求回数据后再重新设置给购物车列表进行渲染
