@@ -1,4 +1,4 @@
-import { getLatestCartGoods, memberCartMerge, memberCart, memberCartDelete } from '@/api/cart'
+import { getLatestCartGoods, memberCartMerge, memberCart, memberCartDelete, memberCartAdd } from '@/api/cart'
 
 export default {
   namespaced: true,
@@ -37,9 +37,11 @@ export default {
     insertCart (store, payload) {
       return new Promise((resolve, reject) => {
         if (store.rootState.user.profile.token) {
-          // 已登录
+          memberCartAdd(payload.skuId, payload.count)
+            .then(() => memberCart())
+            .then(res => store.commit('INSERTCART', res.result))
+          resolve()
         } else {
-          // 未登录
           store.commit('INSERTCART', payload)
           resolve()
         }
@@ -208,3 +210,6 @@ export default {
 // N6、例如 Promise.then(()=>return API接口).then(res => 此时res就是API接口的返回数据)
 // N7、batchDeleteCart与deleteCart函数中，如果用户已登录状态，则分别会调用接口删除购物车数据（前者是批量删除、后者是单个删除）
 // N7、删除后会重新调用服务器接口memberCart去请求最新的购物车列表数据，请求回数据后再重新设置给购物车列表进行渲染
+// N8、actions.insertCart方法中，用户登录后调用memberCartAdd接口
+// N8、后面两个.then()也可以只写 .then(res => store.commit('INSERTCART', res.result))
+// N8、之所以在此之前多加一个.then()去调用memberCart接口，是为了应变更加复杂的情况（调用接口可以解决意外情况发生）
