@@ -1,4 +1,4 @@
-import { getLatestCartGoods, memberCartMerge } from '@/api/cart'
+import { getLatestCartGoods, memberCartMerge, memberCart } from '@/api/cart'
 
 export default {
   namespaced: true,
@@ -48,9 +48,9 @@ export default {
     queryCart (store) {
       return new Promise((resolve, reject) => {
         if (store.rootState.user.profile.token) {
-          // 已登录
+          memberCart().then(res => (store.commit('SETCART', res.result)))
+          resolve()
         } else {
-          // 未登录
           const skuidList = store.state.list.map(item => item.skuId)
           const promiseList = []
           skuidList.forEach(item => {

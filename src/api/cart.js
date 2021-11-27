@@ -30,4 +30,9 @@ export const memberCartMerge = (payloadList) => {
   return request('/member/cart/merge', 'post', payloadList)
 }
 
+// （登录后）获取购物车数据
+export const memberCart = () => {
+  return request('/member/cart', 'get')
+}
+
 // N1、memberCartMerge接口，参数payloadList是一个数组，不要写成  return request('/member/cart/merge', 'post', {payloadList}) 否则服务器会返回500错误
