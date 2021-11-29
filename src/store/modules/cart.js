@@ -126,7 +126,12 @@ export default {
     updateCartSku (store, { newSku, oldSkuId }) {
       return new Promise((resolve, reject) => {
         if (store.rootState.user.profile.token) {
-          // 已登录
+          const oldGoods = store.state.list.find(item => item.skuId === oldSkuId)
+          memberCartDelete([oldSkuId])
+            .then(() => memberCartAdd(newSku.skuid, oldGoods.count))
+            .then(() => memberCart())
+            .then(res => store.commit('SETCART', res.result))
+          resolve()
         } else {
           const oldGoods = store.state.list.find(item => item.skuId === oldSkuId)
           store.commit('DELETECART', oldSkuId)
@@ -222,3 +227,6 @@ export default {
 // N8、之所以在此之前多加一个.then()去调用memberCart接口，是为了应变更加复杂的情况（调用接口可以解决意外情况发生）
 // N9、memberCartDelete(skuIdList).then(() => memberCart(skuIdList)).then(res => store.commit('SETCART', res.result))
 // N9、线上操作接口后的两个.then()中memberCart是查询购物车最新状态，而'SETCART'是将最新状态数据设置给购物车
+// N10、updateCartSku更改购物车商品中的规格，登录状态与未登录状态的流程是类似的：区别在于是否更改服务器的规格
+// N10、登录状态：找到旧商品，删除旧商品、将新skuId与旧商品count以调用接口的方式重新添加到购物车、查询最新购物车列表后，将新数据设置给购物车实现更新规格的目的
+// N10、未登录状态：找到旧商品，删除旧商品、将本地选择好的新商品SKU以本地mutations.INSERTCART的方式重新插入到购物车实现更新规格的目的
