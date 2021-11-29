@@ -10,7 +10,7 @@
         <!-- 收货地址 -->
         <h3 class="box-title">收货地址</h3>
         <div class="box-body">
-          <CheckoutAddress :address-list="checkoutDatalist.userAddresses" />
+          <CheckoutAddress :address-list="checkoutDatalist.userAddresses" @change="changeAddress" />
         </div>
         <!-- 商品信息 -->
         <h3 class="box-title">商品信息</h3>
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { createOrderPre } from '@/api/order'
 import CheckoutAddress from './components/checkout_address'
 
@@ -89,7 +89,15 @@ export default {
     const checkoutDatalist = ref(null)
     createOrderPre().then(res => (checkoutDatalist.value = res.result))
 
-    return { checkoutDatalist }
+    const params = reactive({
+      addressId: null
+    })
+    const changeAddress = (addressId) => {
+      params.addressId = addressId
+      console.log(addressId)
+    }
+
+    return { checkoutDatalist, changeAddress }
   }
 }
 </script>

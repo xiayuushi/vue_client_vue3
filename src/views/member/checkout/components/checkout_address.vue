@@ -10,15 +10,21 @@
       <a href="javascript:;" v-if="showAddress">修改地址</a>
     </div>
     <div class="action">
-      <XxxButton class="btn" @click="showDialog=true">切换地址</XxxButton>
+      <XxxButton class="btn" @click="openDialog">切换地址</XxxButton>
       <XxxButton class="btn">添加地址</XxxButton>
     </div>
     <!-- 自定义对话框组件 -->
-    <XxxDialog title="测试对话框" v-model:visible="showDialog">
-      内容
+    <XxxDialog title="切换地址" v-model:visible="showDialog">
+      <div class="text item" :class="{ active: selectedAddress && selectedAddress.id === item.id }" v-for="item in addressList" :key="item.id" @click="selectedAddress = item">
+        <ul>
+          <li><span>收<i/>货<i/>人：{{ item.receiver }}</span></li>
+          <li><span>联系方式：</span>{{ item.contact.replace(/^(\d{3})\d{4}(\d{4})/,'$1****$2') }}</li>
+          <li><span>收货地址：</span>{{ item.fullLocation.replace(/ /g,'') + item.address }}</li>
+        </ul>
+      </div>
       <template #footer>
         <XxxButton type="gray" style="margin-right:20px" @click="showDialog=false">取消</XxxButton>
-        <XxxButton type="primary" @click="showDialog=false">确认</XxxButton>
+        <XxxButton type="primary" @click="submit">确认</XxxButton>
       </template>
     </XxxDialog>
   </div>
@@ -35,7 +41,8 @@ export default {
       default: () => []
     }
   },
-  setup (props) {
+  emits: ['change'],
+  setup (props, { emit }) {
     const showAddress = ref(null)
     if (props.addressList.length) {
       const userDefaultAddress = props.addressList.find(item => item.isDefault === 0)
@@ -44,8 +51,22 @@ export default {
     }
 
     const showDialog = ref(false)
+    emit('change', showAddress.value?.id)
 
-    return { showAddress, showDialog }
+    const selectedAddress = ref(null)
+
+    const submit = () => {
+      showDialog.value = false
+      showAddress.value = selectedAddress.value
+      emit('change', showAddress.value?.id)
+    }
+
+    const openDialog = () => {
+      selectedAddress.value = null
+      showDialog.value = true
+    }
+
+    return { showAddress, showDialog, submit, selectedAddress, openDialog }
   }
 }
 
@@ -60,6 +81,10 @@ export default {
 // 4、vue3的v-model与vue2中的.sync修饰符是类似的
 // 4、vue2中的xxx.sync 可以拆解为 :xxx 与 @update:xxx
 // 4、vue3中的v-model:xxx 可以拆解为 :xxx 与 @update:xxx
+// 5、vue3中如果组件没有根元素，而是代码片段，则在使用emit()传递方法给外界时，规范起见应该在emits选项中先申明再emit传递出去，例如 emits:['change']
+// 6、emit('change', showAddress.value?.id)等同于emit('change', showAddress.value && showAddress.value.id) 点语法之前的'?'表示是否存在，存在则会往下取后续属性
+// 7、点语法前的'?'是ES6新语法，表示有则可以往下继续取后续属性的值，否则不取，可以避免取到null时再往下取值导致报错（类似但区别于三元表达式中的'?'）
+// 8、submit确认选择地址后，需要渲染显示地址，并将当前选择的地址渲染到显示地址中，并将后续接口需要的参数addressId使用emit()传递给父组件checkout.vue
 
 </script>
 
@@ -113,6 +138,32 @@ export default {
       font-size: 14px;
       &:first-child {
         margin-right: 10px;
+      }
+    }
+  }
+}
+.xxx-dialog {
+  :deep(.body) {
+    max-height: 600px;
+    overflow-y: scroll;
+  }
+  .text {
+    flex: 1;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    &.item {
+      border: 1px solid #f5f5f5;
+      margin-bottom: 10px;
+      cursor: pointer;
+      &.active,&:hover {
+        border-color: @xtxColor;
+        background: lighten(@xtxColor,50%);
+      }
+      > ul {
+        padding: 10px;
+        font-size: 14px;
+        line-height: 30px;
       }
     }
   }

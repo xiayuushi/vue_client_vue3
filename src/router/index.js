@@ -9,7 +9,7 @@ const Goods = () => import('@/views/goods')
 const Login = () => import('@/views/login')
 const LoginCallback = () => import('@/views/login/components/login_callback')
 const Cart = () => import('@/views/cart')
-const Checkout = () => import('@/views/member/order/index')
+const Checkout = () => import('@/views/member/checkout')
 
 const routes = [
   {
