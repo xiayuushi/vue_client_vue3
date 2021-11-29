@@ -40,6 +40,7 @@ module.exports = {
 // 5、webpack是vue-cli的底层实现原理，默认情况下vue-cli只能访问localhost地址，是无法直接通过vue-cli服务器访问线上IP域名的
 // 6、将QQ登录作为第三方登录必须使用IP域名的形式，因此必须开启webpack服务器的IP域名访问权限
 // 6、在此之前须修改host将本地localhost映射为IP域名（webpack服务器配置IP访问生效后，项目启动地址可以访问线上IP域名，但实际上依旧是访问的本地localhost）
+// 6、QQ登录作为第三方登录配置完成后，直接访问localhost中映射的线上域名可能会报错SDK错误，此时需要先点击一次QQ登录再返回到线上域名登录页就可以正常登录了
 // 7、 configureWebpack: { externals: { qc: 'QC' } }
 // 7、1 用于配置webpack忽略非模块化安装的包，让其不会被打包进项目
 // 7、2 且import导包时不会报错qc模块找不到，也不会报错全局变量QC找不到

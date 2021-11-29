@@ -83,7 +83,7 @@
         <div class="total">
           共 {{ $store.getters['cart/validListCounts'] }} 件商品，已选择 {{ $store.getters['cart/selectedListCounts'] }} 件，商品合计：
           <span class="red">¥{{ $store.getters['cart/selectedListAmount'] }}</span>
-          <XxxButton type="primary">下单结算</XxxButton>
+          <XxxButton type="primary" @click="checkout">下单结算</XxxButton>
         </div>
       </div>
       <!-- 猜你喜欢 -->
@@ -94,6 +94,7 @@
 
 <script>
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import CartNone from './components/cart_none'
 import CartSku from './components/cart_sku'
 import Confirm from '@/library/Confirm/index.js'
@@ -133,7 +134,17 @@ export default {
     const updateCartSku = (newSku, oldSkuId) => {
       store.dispatch('cart/updateCartSku', { newSku, oldSkuId })
     }
-    return { checkOne, checkAll, deleteCart, batchDeleteCart, changeCount, updateCartSku }
+
+    const router = useRouter()
+    const checkout = () => {
+      if (store.getters['cart/selectedList'].length === 0) {
+        return Message({ text: '请至少勾选一件商品再进行结算' })
+      }
+      Confirm({ text: '是否前往结算页面？' }).then(() => {
+        router.push('/member/checkout')
+      }).catch(() => {})
+    }
+    return { checkOne, checkAll, deleteCart, batchDeleteCart, changeCount, updateCartSku, checkout }
   }
 }
 
@@ -148,12 +159,13 @@ export default {
 // 7、Math.round(item.nowPrice * 100) * item.count / 100 是计算单个选中商品的金额时四舍五入保留两位小数
 // 8、购物车商品单选需要区分两种情况：Q1未登录字体修改的是vuex的数据 Q2登录状态修改的是服务器的数据
 // 9、batchDeleteCart()不传参或者传false则做批量删除购物车中选中的商品（不传参也必须加括号调用）；传参true表示清空购物车中的无效商品（同一个方法根据传参实现类似的功能）
+// 10、去结算的逻辑：用户未勾选有效商品无法进行结算，用户已勾选未登录，则路由前置导航守卫强制用户先跳转登录（登录成功后会重定向到目标跳转页结算页）；用户已登录则直接进入结算页
 
 // N1、@xxx="($event)=>fn($event,payload)" 表示接收子组件emit("xxx")传递过来的参数$event的同时，还传入了fn自己的参数payload，后续在实现fn函数时可以拿到这两个传参
 // N2、@xxx="($event)=>fn($event,payload)" 参数位置必须对应
 // N2、如果接收的参数$event放在第一参数位置，则第一参数就是子组件emit传递过来的参数；如果接收的参数$event放在第二参数位置，则第二参数就是子组件emit传递过来的参数
 // N2、如果拿到以上参数与vuex中的mutations或者actions中的方法对接，则键名必须与vuex中的方法对应才能正确传参
-// N3、tytyty方法中第一形参newSku是cart_sku.vue组件传递过来的购物车当前选中的SKU数据，第二形参goods是整个SKU数据，需要将第一形参覆盖第二形参，获取最新的SKU信息来达到更新购物车页面的购物车SKU数据的目的
+// N3、updateCartSku方法中第一形参newSku是cart_sku.vue组件传递过来的购物车当前选中的SKU数据，第二形参goods是整个SKU数据，需要将第一形参覆盖第二形参，获取最新的SKU信息来达到更新购物车页面的购物车SKU数据的目的
 </script>
 
 <style lang="less" scoped>
