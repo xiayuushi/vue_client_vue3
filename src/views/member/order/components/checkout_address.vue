@@ -10,9 +10,17 @@
       <a href="javascript:;" v-if="showAddress">修改地址</a>
     </div>
     <div class="action">
-      <XxxButton class="btn">切换地址</XxxButton>
+      <XxxButton class="btn" @click="showDialog=true">切换地址</XxxButton>
       <XxxButton class="btn">添加地址</XxxButton>
     </div>
+    <!-- 自定义对话框组件 -->
+    <XxxDialog title="测试对话框" v-model:visible="showDialog">
+      内容
+      <template #footer>
+        <XxxButton type="gray" style="margin-right:20px" @click="showDialog=false">取消</XxxButton>
+        <XxxButton type="primary" @click="showDialog=false">确认</XxxButton>
+      </template>
+    </XxxDialog>
   </div>
 </template>
 
@@ -34,15 +42,25 @@ export default {
       // eslint-disable-next-line vue/no-setup-props-destructure
       userDefaultAddress ? showAddress.value = userDefaultAddress : showAddress.value = props.addressList[0]
     }
-    return { showAddress }
+
+    const showDialog = ref(false)
+
+    return { showAddress, showDialog }
   }
 }
 
 // 1、提示 a value from the `props` in root scope of `setup()` will cause the value to lose reactivity..
 // 1、只需要添加注释忽略该eslint报错即可
-// N1、将props传递过来的复杂数据类型赋值给ref声明的响应式数据时，当ref响应式数据发生变化时，会因为同一引用而修改props传递过来的数据，虽不建议这么做但是可行
-// N2、上面String.replace()中的正则部分，左侧为待替换的字符串的正则，右侧为需要替换的内容或者格式（左2右4，中间星号代替）
-// N2、其中$1表示第一个括号的正则部分，$2表示第二个括号的正则部分，'$1****$2'表示两个括号中间的正则部分替换为星号
+// 2、将props传递过来的复杂数据类型赋值给ref声明的响应式数据时，当ref响应式数据发生变化时，会因为同一引用而修改props传递过来的数据，虽不建议这么做但是可行
+// 2、上面String.replace()中的正则部分，左侧为待替换的字符串的正则，右侧为需要替换的内容或者格式（左2右4，中间星号代替）
+// 2、其中$1表示第一个括号的正则部分，$2表示第二个括号的正则部分，'$1****$2'表示两个括号中间的正则部分替换为星号
+// 3、vue3使用v-model指令报错时：'v-model' directives require no argument.
+// 3、st1 在VScode中，打开 “扩展 > ESlint插件 >扩展设置”，然后搜索Eslint，找到 Eslint: Validate 部分
+// 3、st2 在setting.json中先删除"eslint.validate": [] 然后编辑设置  "vetur.validation.template": false
+// 4、vue3的v-model与vue2中的.sync修饰符是类似的
+// 4、vue2中的xxx.sync 可以拆解为 :xxx 与 @update:xxx
+// 4、vue3中的v-model:xxx 可以拆解为 :xxx 与 @update:xxx
+
 </script>
 
 <style lang="less" scoped>
