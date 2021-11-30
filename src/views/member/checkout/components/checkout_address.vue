@@ -5,13 +5,13 @@
       <ul v-if="showAddress">
         <li><span>收<i/>货<i/>人：{{ showAddress.receiver }}</span></li>
         <li><span>联系方式：</span>{{ showAddress.contact.replace(/^(\d{3})\d{4}(\d{4})/,'$1****$2') }}</li>
-        <li><span>收货地址：</span>{{ showAddress.fullLocation +' '+ showAddress.address }}</li>
+        <li><span>收货地址：</span>{{ showAddress.fullLocation.replace(/ /g,'')+ showAddress.address }}</li>
       </ul>
-      <a href="javascript:;" v-if="showAddress">修改地址</a>
+      <a href="javascript:;" v-if="showAddress" @click="editAddAddress(showAddress)">修改地址</a>
     </div>
     <div class="action">
       <XxxButton class="btn" @click="openDialog">切换地址</XxxButton>
-      <XxxButton class="btn" @click="addAddress">添加地址</XxxButton>
+      <XxxButton class="btn" @click="editAddAddress({})">添加地址</XxxButton>
     </div>
     <!-- 切换地址对话框 -->
     <XxxDialog title="切换地址" v-model:visible="showDialog">
@@ -28,7 +28,7 @@
       </template>
     </XxxDialog>
     <!-- 添加地址对话框 -->
-    <AddressAddEdit ref="target" @on-success="successHandler"></AddressAddEdit>
+    <AddressAddEdit ref="target" @on-success="successHandler" />
   </div>
 </template>
 
@@ -71,16 +71,23 @@ export default {
     }
 
     const target = ref(null)
-    const addAddress = () => {
-      target.value.openDialog()
+    const editAddAddress = (payload) => {
+      target.value.openDialog(payload)
     }
 
     const successHandler = (form) => {
-      // eslint-disable-next-line vue/no-mutating-props
-      props.addressList.unshift(JSON.parse(JSON.stringify(form.fullLocation)))
+      const currentEditAddress = props.addressList.find(item => item.id === form.id)
+      if (currentEditAddress) {
+        for (const key in currentEditAddress) {
+          currentEditAddress[key] = form[key]
+        }
+      } else {
+        // eslint-disable-next-line vue/no-mutating-props
+        props.addressList.unshift(JSON.parse(JSON.stringify(form.fullLocation)))
+      }
     }
 
-    return { showAddress, showDialog, submit, selectedAddress, openDialog, target, addAddress, successHandler }
+    return { showAddress, showDialog, submit, selectedAddress, openDialog, target, editAddAddress, successHandler }
   }
 }
 
@@ -102,6 +109,14 @@ export default {
 // 9、props.addressList.unshift(JSON.parse(JSON.stringify(form.fullLocation)))使用深拷贝避免地址引用导致的打开新增收货地址对话框时数据也一并被清除的风险
 // 9、props.addressList.unshift(JSON.parse(JSON.stringify(form.fullLocation)))是将新增对话框组件中emit()传递出来的新增地址添加到收货地址列表的最前面
 // 10、对props中的复杂数据类型进行改值时，可以通过JS注释忽略eslint报错
+// 11、successHandler接收子组件编辑收货地址或者新增收货地址的数据，需要判断分情况处理：
+// 11、Q1 如果能够从服务器接口返回的所有收货地址中匹配到从checkout_add_edit_address.vue传递过来的收货地址form.id，则说明之前就有的收货地址，因此是编辑操作
+// 11、Q2 无法从现有收货地址列表中匹配到从checkout_add_edit_address.vue传递过来的收货地址form.id，则说明是新增的收货地址，也就是新增操作
+// 12、Q1 新增收货地址的逻辑是 将新增的收货地址插入到所有收货地址列表的最前面
+// 12、Q2 编辑收货地址的逻辑是 将当前正在编辑的收货地址使用for..in对已有的每一项进行遍历修改赋值
+// 13、for...in遍历的好处，只会对对象已有属性进行操作，可以避免无效赋值
+// 14、String.replace(/ /g,'')正则的意思是全局匹配空格，将空格替换为空，用于减少字符串中出现的不必要的空格
+
 </script>
 
 <style lang="less" scoped>
