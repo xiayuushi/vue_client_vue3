@@ -4,3 +4,8 @@ import request from '@/utils/request'
 export const createOrderPre = () => {
   return request('/member/order/pre', 'get')
 }
+
+// 添加收货地址 参数form是对象
+export const memberAddress = (form) => {
+  return request('/member/address', 'post', form)
+}

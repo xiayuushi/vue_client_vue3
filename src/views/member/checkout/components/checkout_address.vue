@@ -11,11 +11,11 @@
     </div>
     <div class="action">
       <XxxButton class="btn" @click="openDialog">切换地址</XxxButton>
-      <XxxButton class="btn">添加地址</XxxButton>
+      <XxxButton class="btn" @click="addAddress">添加地址</XxxButton>
     </div>
-    <!-- 自定义对话框组件 -->
+    <!-- 切换地址对话框 -->
     <XxxDialog title="切换地址" v-model:visible="showDialog">
-      <div class="text item" :class="{ active: selectedAddress && selectedAddress.id === item.id }" v-for="item in addressList" :key="item.id" @click="selectedAddress = item">
+      <div class="text item" :class="{ active: selectedAddress?.id === item.id }" v-for="item in addressList" :key="item.id" @click="selectedAddress = item">
         <ul>
           <li><span>收<i/>货<i/>人：{{ item.receiver }}</span></li>
           <li><span>联系方式：</span>{{ item.contact.replace(/^(\d{3})\d{4}(\d{4})/,'$1****$2') }}</li>
@@ -27,11 +27,14 @@
         <XxxButton type="primary" @click="submit">确认</XxxButton>
       </template>
     </XxxDialog>
+    <!-- 添加地址对话框 -->
+    <AddressAddEdit ref="target" @on-success="successHandler"></AddressAddEdit>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue'
+import AddressAddEdit from './checkout_add_edit_address'
 
 export default {
   name: 'ChecekoutAddress',
@@ -41,6 +44,7 @@ export default {
       default: () => []
     }
   },
+  components: { AddressAddEdit },
   emits: ['change'],
   setup (props, { emit }) {
     const showAddress = ref(null)
@@ -66,7 +70,17 @@ export default {
       showDialog.value = true
     }
 
-    return { showAddress, showDialog, submit, selectedAddress, openDialog }
+    const target = ref(null)
+    const addAddress = () => {
+      target.value.openDialog()
+    }
+
+    const successHandler = (form) => {
+      // eslint-disable-next-line vue/no-mutating-props
+      props.addressList.unshift(JSON.parse(JSON.stringify(form.fullLocation)))
+    }
+
+    return { showAddress, showDialog, submit, selectedAddress, openDialog, target, addAddress, successHandler }
   }
 }
 
@@ -85,7 +99,9 @@ export default {
 // 6、emit('change', showAddress.value?.id)等同于emit('change', showAddress.value && showAddress.value.id) 点语法之前的'?'表示是否存在，存在则会往下取后续属性
 // 7、点语法前的'?'是ES6新语法，表示有则可以往下继续取后续属性的值，否则不取，可以避免取到null时再往下取值导致报错（类似但区别于三元表达式中的'?'）
 // 8、submit确认选择地址后，需要渲染显示地址，并将当前选择的地址渲染到显示地址中，并将后续接口需要的参数addressId使用emit()传递给父组件checkout.vue
-
+// 9、props.addressList.unshift(JSON.parse(JSON.stringify(form.fullLocation)))使用深拷贝避免地址引用导致的打开新增收货地址对话框时数据也一并被清除的风险
+// 9、props.addressList.unshift(JSON.parse(JSON.stringify(form.fullLocation)))是将新增对话框组件中emit()传递出来的新增地址添加到收货地址列表的最前面
+// 10、对props中的复杂数据类型进行改值时，可以通过JS注释忽略eslint报错
 </script>
 
 <style lang="less" scoped>

@@ -74,12 +74,12 @@ export default {
 
 // 1、QC.Login.check() 是QQ登录SDK中的API，判断是否采用QQ登录作为第三方登录
 // 2、QC.Login.getMe(回调) 是QQ登录SDK中的API，用于获取openId（该API回调中的第一形参就是openId）
-// 2、QC.Login.getMe(回调) 百分比能够获取openId，因此无需判断没有openId的情况（只要用户进行QQ扫码一定可以获取openId）
+// 2、QC.Login.getMe(回调) 必定能够获取openId，因此无需判断没有openId的情况（只要用户进行QQ扫码一定可以获取openId）
 // 3、有openId，此时调用后端提供的第三方登录接口进行登录
 // 3、结果1：登录成功（使用QQ登录成功直接跳转来源页或者首页）
 // 3、结果2：登录失败（使用QQ登录失败有两种情况 Q1没绑定账号 Q2没有账号）
 // 4、使用QQ登录SDK的API之前，必须做的两件事
-// 4、1 必须将在项目静态页中引入SDK并在引入SDK的script标签中设置appid与回调地址
+// 4、1 必须在项目静态页中引入SDK并在引入SDK的script标签中设置appid与回调地址
 // 4、2 必须配置webpack忽略打包该SDK（避免qc模块引入报错、避免全局变量QC报错、避免打包该SDK到项目中）
 </script>
 
