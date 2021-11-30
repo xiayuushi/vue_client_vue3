@@ -14,3 +14,8 @@ export const memberAddress = (form) => {
 export const updateMemberAddress = (form) => {
   return request(`/member/address/${form.id}`, 'put', form)
 }
+
+// 添加收货地址 参数form是对象
+export const memberOrder = (form) => {
+  return request('/member/order', 'post', form)
+}

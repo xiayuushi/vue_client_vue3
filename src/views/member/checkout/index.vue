@@ -70,7 +70,7 @@
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <XxxButton type="primary">提交订单</XxxButton>
+          <XxxButton type="primary" @click="submitOrder">提交订单</XxxButton>
         </div>
       </div>
     </div>
@@ -79,7 +79,9 @@
 
 <script>
 import { ref, reactive } from 'vue'
-import { createOrderPre } from '@/api/order'
+import { useRouter } from 'vue-router'
+import { createOrderPre, memberOrder } from '@/api/order'
+import Message from '@/library/Message/index.js'
 import CheckoutAddress from './components/checkout_address'
 
 export default {
@@ -87,19 +89,39 @@ export default {
   components: { CheckoutAddress },
   setup () {
     const checkoutDatalist = ref(null)
-    createOrderPre().then(res => (checkoutDatalist.value = res.result))
-
     const params = reactive({
-      addressId: null
+      goods: [],
+      addressId: null,
+      deliveryTimeType: 1,
+      payType: 1,
+      payChannel: 1,
+      buyerMessage: null
     })
+
+    createOrderPre().then(res => {
+      checkoutDatalist.value = res.result
+      params.goods = res.result.goods.map(({ skuId, count }) => ({ skuId, count }))
+    })
+
     const changeAddress = (addressId) => {
       params.addressId = addressId
-      console.log(addressId)
     }
 
-    return { checkoutDatalist, changeAddress }
+    const router = useRouter()
+    const submitOrder = async () => {
+      if (!params.addressId) return Message({ text: '请先选择收货地址' })
+      const { result } = await memberOrder(params)
+      router.push('/member/order?id=' + result.id)
+      Message({ type: 'success', text: '提交订单成功' })
+    }
+
+    return { checkoutDatalist, changeAddress, submitOrder }
   }
 }
+
+// 1、不要直接在setup函数中使用async进行异步代码改写
+// 2、但在setup内的其他函数中可以使用async与await将异步代码以同步方式书写
+
 </script>
 
 <style lang="less" scoped>

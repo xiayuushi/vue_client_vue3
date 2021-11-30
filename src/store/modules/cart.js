@@ -39,7 +39,7 @@ export default {
         if (store.rootState.user.profile.token) {
           memberCartAdd(payload.skuId, payload.count)
             .then(() => memberCart())
-            .then(res => store.commit('INSERTCART', res.result))
+            .then(res => store.commit('SETCART', res.result))
           resolve()
         } else {
           store.commit('INSERTCART', payload)
