@@ -11,11 +11,12 @@
         <span class="icon iconfont icon-queren2"></span>
         <div class="tip">
           <p>订单提交成功！请尽快完成支付。</p>
-          <p>支付还剩 <span>24分59秒</span>, 超时后将取消订单</p>
+          <p v-if="prePayInfo.countdown > -1">支付还剩 <span>{{ timeText }}</span>, 超时后将取消订单</p>
+          <p v-else>订单已经超时</p>
         </div>
         <div class="amount">
           <span>应付总额：</span>
-          <span>¥{{ payInfo.payMoney }}</span>
+          <span>¥{{ prePayInfo.payMoney }}</span>
         </div>
       </div>
       <!-- 付款方式 -->
@@ -41,22 +42,42 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { getMyMemberOrder } from '@/api/order'
+import { useIntervalFn } from '@vueuse/core'
+import dayjs from 'dayjs'
 
 export default {
   name: 'PayPage',
   setup () {
-    const payInfo = ref(null)
+    const prePayInfo = ref(null)
     const route = useRoute()
     getMyMemberOrder(route.query.id).then(res => {
-      payInfo.value = res.result
+      prePayInfo.value = res.result
+      time.value = res.result.countdown
+      timeText.value = dayjs.unix(time.value).format('mm分ss秒')
+      resume()
     })
 
-    return { payInfo }
+    const time = ref(0)
+    const timeText = ref('')
+    const { pause, resume } = useIntervalFn(() => {
+      time.value--
+      timeText.value = dayjs.unix(time.value).format('mm分ss秒')
+      console.log(timeText.value)
+      if (time.value <= 0) {
+        pause()
+      }
+    }, 1000, { immediate: false })
+    onUnmounted(() => pause())
+
+    return { prePayInfo, timeText }
   }
 }
+
+// 1、timeText.value = dayjs.unix(time.value).format('mm分ss秒') 使用dayjs的方法将服务器返回的数值转成时间戳再转成相应的'xx分xx秒'的格式
+// 2、拿到服务器返回的时间字段一开始就需要转成'xx分xx秒'的格式，因此以上代码在两个地方都写了，防止一开始从xx分58秒开始倒计时...
 </script>
 
 <style lang="less" scoped>
