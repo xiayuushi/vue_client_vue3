@@ -94,7 +94,7 @@ export default {
 // 1、提示 a value from the `props` in root scope of `setup()` will cause the value to lose reactivity..
 // 1、只需要添加注释忽略该eslint报错即可
 // 2、将props传递过来的复杂数据类型赋值给ref声明的响应式数据时，当ref响应式数据发生变化时，会因为同一引用而修改props传递过来的数据，虽不建议这么做但是可行
-// 2、上面String.replace()中的正则部分，左侧为待替换的字符串的正则，右侧为需要替换的内容或者格式（左2右4，中间星号代替）
+// 2、上面String.replace()中的正则部分，左侧为待替换的字符串的正则，右侧为需要替换的内容或者格式（左3右4保留原格式，中间星号代替）
 // 2、其中$1表示第一个括号的正则部分，$2表示第二个括号的正则部分，'$1****$2'表示两个括号中间的正则部分替换为星号
 // 3、vue3使用v-model指令报错时：'v-model' directives require no argument.
 // 3、st1 在VScode中，打开 “扩展 > ESlint插件 >扩展设置”，然后搜索Eslint，找到 Eslint: Validate 部分
@@ -104,8 +104,8 @@ export default {
 // 4、vue3中的v-model:xxx 可以拆解为 :xxx 与 @update:xxx
 // 5、vue3中如果组件没有根元素，而是代码片段，则在使用emit()传递方法给外界时，规范起见应该在emits选项中先申明再emit传递出去，例如 emits:['change']
 // 6、emit('change', showAddress.value?.id)等同于emit('change', showAddress.value && showAddress.value.id) 点语法之前的'?'表示是否存在，存在则会往下取后续属性
-// 7、点语法前的'?'是ES6新语法，表示有则可以往下继续取后续属性的值，否则不取，可以避免取到null时再往下取值导致报错（类似但区别于三元表达式中的'?'）
-// 8、submit确认选择地址后，需要渲染显示地址，并将当前选择的地址渲染到显示地址中，并将后续接口需要的参数addressId使用emit()传递给父组件checkout.vue
+// 7、点语法前的'?'是ES6中的可选链判断操作符，表示有则可以往下继续取后续属性的值，否则不取，可以避免取到null时再往下取值导致报错（类似但区别于三元表达式中的'?'）
+// 8、submit确认选择地址后，需要渲染显示地址，并将当前选择的地址渲染到显示地址中，并将后续接口需要的参数addressId使用emit()传递给父组件checkout/index.vue
 // 9、props.addressList.unshift(JSON.parse(JSON.stringify(form.fullLocation)))使用深拷贝避免地址引用导致的打开新增收货地址对话框时数据也一并被清除的风险
 // 9、props.addressList.unshift(JSON.parse(JSON.stringify(form.fullLocation)))是将新增对话框组件中emit()传递出来的新增地址添加到收货地址列表的最前面
 // 10、对props中的复杂数据类型进行改值时，可以通过JS注释忽略eslint报错
@@ -115,7 +115,7 @@ export default {
 // 12、Q1 新增收货地址的逻辑是 将新增的收货地址插入到所有收货地址列表的最前面
 // 12、Q2 编辑收货地址的逻辑是 将当前正在编辑的收货地址使用for..in对已有的每一项进行遍历修改赋值
 // 13、for...in遍历的好处，只会对对象已有属性进行操作，可以避免无效赋值
-// 14、String.replace(/ /g,'')正则的意思是全局匹配空格，将空格替换为空，用于减少字符串中出现的不必要的空格
+// 14、String.replace(/ /g,'')是使用正则全局匹配空格，将空格替换为空，用于减少字符串中出现的不必要的空格
 
 </script>
 

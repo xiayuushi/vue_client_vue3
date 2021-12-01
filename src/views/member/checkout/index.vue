@@ -111,7 +111,7 @@ export default {
     const submitOrder = async () => {
       if (!params.addressId) return Message({ text: '请先选择收货地址' })
       const { result } = await memberOrder(params)
-      router.push('/member/order?id=' + result.id)
+      router.push('/member/pay?id=' + result.id)
       Message({ type: 'success', text: '提交订单成功' })
     }
 
