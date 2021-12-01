@@ -45,7 +45,7 @@ export default {
 
 // 1、如果是以queryString的方式传参，则可以通过$route.query的方式获取对应的传参值
 // 2、如果一个标签中需要使用某个对象中的属性作为单分支v-if条件渲染的判断依据，然后这个对象属性也需要渲染出来，则可以使用链判断操作符来省略条件判断
-// 2、例如 <xxx v-if="obj.x">{{ obj.x }}</xxx> 则可以直接简写为 <xxx>{{ obj?.x }}<xxx>
+// 2、例如 <xxx v-if="obj.x">{{ obj.x }}</xxx> 则可以直接简写为 <xxx>{{ obj?.x }}</xxx>
 
 </script>
 

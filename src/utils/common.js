@@ -4,6 +4,7 @@ import AppFooter from '../components/AppFooter'
 import AppHeaderNav from '../components/AppHeaderNav'
 import AppHeaderCart from '../components/AppHeaderCart'
 import AppHeaderSticky from '../components/AppHeaderSticky'
+import AppMemberAside from '../components/AppMemberAside'
 
 export default function (Vue, options) {
   Vue.component(AppNav.name, AppNav)
@@ -12,6 +13,7 @@ export default function (Vue, options) {
   Vue.component(AppHeaderNav.name, AppHeaderNav)
   Vue.component(AppHeaderCart.name, AppHeaderCart)
   Vue.component(AppHeaderSticky.name, AppHeaderSticky)
+  Vue.component(AppMemberAside.name, AppMemberAside)
 }
 
 // 1、vue2与vue3封装全局公共组件是类似的，区别只在于注册挂载不同

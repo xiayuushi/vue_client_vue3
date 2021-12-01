@@ -13,6 +13,9 @@ const Checkout = () => import('@/views/member/checkout')
 const Pay = () => import('@/views/member/pay')
 const PayCallback = () => import('@/views/member/pay/components/pay_callback')
 
+const MemberLayout = () => import('@/views/member/Layout')
+const MemberHome = () => import('@/views/member/home')
+
 const routes = [
   {
     path: '/',
@@ -25,7 +28,14 @@ const routes = [
       { path: '/cart', component: Cart },
       { path: '/member/checkout', component: Checkout },
       { path: '/member/pay', component: Pay },
-      { path: '/pay/callback', component: PayCallback }
+      { path: '/pay/callback', component: PayCallback },
+      {
+        path: '/member',
+        component: MemberLayout,
+        children: [
+          { path: '/member', component: MemberHome }
+        ]
+      }
     ]
   },
   {
@@ -61,3 +71,12 @@ export default router
 // D1、vue2中路由实例中的 scrollBehavior 返回的对象属性x与y 分别代表x轴与y轴的滚动距离
 // D2、vue3中路由实例中的 scrollBehavior 返回的对象属性left与top 分别代表x轴与y轴的滚动距离
 // 4、用户未登录访问以'/member'开头的限制级页面会被路由前置守卫拦截到登录页（登录成功后会直接前往目标页面，需要在组件跳转中router.push()到目标页）
+
+// 5、src/App.vue是放置一级路由出口
+// 5、对应配置的路由记录是 { path: '/', component: Layout组件 }
+
+// 6、src/views/Layout.vue 是放置二级路由出口
+// 6、对应配置的路由记录是 { path: '/', component: Layout组件, children: [ { path: '/xxx', component: member/Layout组件 } ] }
+
+// 7、src/views/member/Layout.vue 是放置三级路由出口
+// 7、对应配置的路由记录是 { path: '/', component: Layout组件, children: [ { path: '/xxx', component: member/Layout组件, children:[{ path: '/xxx', component: ... }] } ] }

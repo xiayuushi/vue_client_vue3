@@ -3,7 +3,7 @@
     <div class="container">
       <ul>
         <template v-if="profile && profile.token">
-          <li><a href="javascript:void(0);"><i class="iconfont icon-user"></i>{{ profile.account }}</a></li>
+          <li><router-link to="/member"><i class="iconfont icon-user"></i>{{ profile.account }}</router-link></li>
           <li><a href="javascript:void(0);" @click="logout">退出登录</a></li>
         </template>
         <template v-else>

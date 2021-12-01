@@ -54,12 +54,12 @@
 </template>
 
 <script>
-import { ref, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { getMyMemberOrder } from '@/api/order'
-import { useIntervalFn } from '@vueuse/core'
 import dayjs from 'dayjs'
+import { useRoute } from 'vue-router'
+import { ref, onUnmounted } from 'vue'
 import { baseURL } from '@/utils/request'
+import { useIntervalFn } from '@vueuse/core'
+import { getMyMemberOrder } from '@/api/order'
 
 export default {
   name: 'PayPage',
