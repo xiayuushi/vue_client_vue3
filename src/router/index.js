@@ -11,6 +11,7 @@ const LoginCallback = () => import('@/views/login/components/login_callback')
 const Cart = () => import('@/views/cart')
 const Checkout = () => import('@/views/member/checkout')
 const Pay = () => import('@/views/member/pay')
+const PayCallback = () => import('@/views/member/pay/components/pay_callback')
 
 const routes = [
   {
@@ -23,7 +24,8 @@ const routes = [
       { path: '/product/:id', component: Goods },
       { path: '/cart', component: Cart },
       { path: '/member/checkout', component: Checkout },
-      { path: '/member/pay', component: Pay }
+      { path: '/member/pay', component: Pay },
+      { path: '/pay/callback', component: PayCallback }
     ]
   },
   {

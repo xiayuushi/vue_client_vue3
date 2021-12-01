@@ -78,14 +78,13 @@ export default {
     const { pause, resume } = useIntervalFn(() => {
       time.value--
       timeText.value = dayjs.unix(time.value).format('mm分ss秒')
-      console.log(timeText.value)
       if (time.value <= 0) {
         pause()
       }
     }, 1000, { immediate: false })
     onUnmounted(() => pause())
 
-    const cbURL = encodeURIComponent('http://www.corho.com:8080/#/login/callback')
+    const cbURL = encodeURIComponent('http://www.corho.com:8080/#/pay/callback')
     const aLiPayHref = `${baseURL}pay/aliPay?orderId=${route.query.id}&redirect=${cbURL}`
 
     const visibleDialog = ref(false)
@@ -98,10 +97,10 @@ export default {
 // 2、拿到服务器返回的时间字段一开始就需要转成'xx分xx秒'的格式，因此以上代码在两个地方都写了，防止一开始从xx分58秒开始倒计时...
 // 3、为a标签添加target属性，属性值为_blank就会以新开页的形式跳转到href指定的页面
 
-// 4、跳转支付平台的a标签的href属性值完整包含以下信息：后台支付基准地址 + 接口指定的支付平台（如 /pay/aliPay） + 订单id + 回跳地址（项目静态页SDK上挂载的localhost中对应的那个线上IP地址）
-// 4、const href = `${baseURL}/pay/aliPay?orderId=${route.query.id}&redirect=http://www.corho.com:8080/#/login/callback`
+// 4、跳转支付平台的a标签的href属性值完整包含以下信息：后台支付基准地址 + 接口指定的支付平台（如 /pay/aliPay） + 订单id + 回跳地址（localhost中对应的那个线上IP地址对应的支付地址）
+// 4、const href = `${baseURL}/pay/aliPay?orderId=${route.query.id}&redirect=http://www.corho.com:8080/#/pay/callback`
 // 4、因为地址可能存在特殊字符，尽量转成编码字符进行传输，因此 将回调地址进行处理 例如：encodeURIComponent(回调地址)
-// 4、const cbUrl = encodeURIComponent('http://www.corho.com:8080/#/login/callback')
+// 4、const cbUrl = encodeURIComponent('http://www.corho.com:8080/#/pay/callback')
 // 4、a标签跳转支付宝支付的href属性值为： const href = `${baseURL}/pay/aliPay?orderId=${route.query.id}&redirect=${cbUrl}`
 // 4、接口指定字段分别是orderId与redirect，因此需要准备这两个字段的相应值
 // 5、沙箱测试账号 jfjbwb4477@sandbox.com 支付与登录密码都是111111
