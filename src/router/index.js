@@ -74,9 +74,7 @@ export default router
 
 // 5、src/App.vue是放置一级路由出口
 // 5、对应配置的路由记录是 { path: '/', component: Layout组件 }
-
 // 6、src/views/Layout.vue 是放置二级路由出口
 // 6、对应配置的路由记录是 { path: '/', component: Layout组件, children: [ { path: '/xxx', component: member/Layout组件 } ] }
-
 // 7、src/views/member/Layout.vue 是放置三级路由出口
 // 7、对应配置的路由记录是 { path: '/', component: Layout组件, children: [ { path: '/xxx', component: member/Layout组件, children:[{ path: '/xxx', component: ... }] } ] }

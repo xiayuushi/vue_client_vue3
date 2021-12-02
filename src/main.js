@@ -10,6 +10,8 @@ import './assets/styles/common.less'
 import common from './utils/common'
 import plugin from './library/index'
 
+import '@/mock'
+
 createApp(App)
   .use(store)
   .use(router)
