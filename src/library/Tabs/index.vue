@@ -1,26 +1,51 @@
 <script>
+import { provide } from 'vue'
+import { useVModel } from '@vueuse/core'
 export default {
   name: 'XxxTabs',
+  props: {
+    modelValue: {
+      type: [String, Number],
+      default: ''
+    }
+  },
+  setup (props, { emit }) {
+    const modelVal = useVModel(props, 'modelValue', emit)
+    provide('activeName', modelVal)
+
+    const tabClick = (name, index) => {
+      modelVal.value = name
+      emit('tab-click', { name, index })
+    }
+
+    return { modelVal, tabClick }
+  },
   render () {
     const tabsPanel = this.$slots.default()
-
     const allTabsPanelList = []
     tabsPanel.forEach(item => {
       if (item.type.name === 'XxxTabsPanel') {
         allTabsPanelList.push(item)
       } else {
-        item.children.forEach(v => (allTabsPanelList.push(v)))
+        item.children.forEach(v => allTabsPanelList.push(v))
       }
     })
     const nav = (
       <nav>
-        { allTabsPanelList.map(v => (<a href="javascript:;">{ v.props.label }</a>)) }
+        {allTabsPanelList.map((v, i) => {
+          return (
+            <a
+              href='javascript:;'
+              class={{ active: v.props.name === this.modelVal }}
+              onClick={() => this.tabClick(v.props.name, i)}
+            >
+              {v.props.label}
+            </a>
+          )
+        })}
       </nav>
     )
-
-    return (
-      <div class='xxx-tabs-container'>{[nav, allTabsPanelList]}</div>
-    )
+    return <div class='xxx-tabs-container'>{[nav, allTabsPanelList]}</div>
   }
 }
 
@@ -33,7 +58,7 @@ export default {
 // 6、遍历默认插槽内容this.$slots.default() 其item.type.name === 'XxxTabsPanel'则说明是静态内容，否则为动态遍历渲染出来的
 // 7、tabsPanel是tabs_panel.vue中传入的默认插槽的内容，它整体是tabs栏每一项（含头部nav与内容allTabsPanelList两个部分）
 // 7、allTabsPanelList是整合了动态生成与静态生成的内容的数组，nav是tabs栏头部，tabsPanel是tabs栏头部对应的下方内容
-
+// 8、除了setup，其余的都是选项API，都可以通过this获取当前组件实例
 </script>
 
 <style lang="less" scoped>
