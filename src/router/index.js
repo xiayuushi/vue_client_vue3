@@ -15,6 +15,10 @@ const PayCallback = () => import('@/views/member/pay/components/pay_callback')
 
 const MemberLayout = () => import('@/views/member/Layout')
 const MemberHome = () => import('@/views/member/home')
+const MemberOrder = () => import('@/views/member/order')
+const MemberTest = () => import('@/views/member/order/test')
+const MemberTest1 = () => import('@/views/member/order/components/test1')
+const MemberTest2 = () => import('@/views/member/order/components/test2')
 
 const routes = [
   {
@@ -33,7 +37,16 @@ const routes = [
         path: '/member',
         component: MemberLayout,
         children: [
-          { path: '/member', component: MemberHome }
+          { path: '/member', component: MemberHome },
+          { path: '/member/order', component: MemberOrder },
+          {
+            path: '/member/test',
+            component: MemberTest,
+            children: [
+              { path: '/member/test1', component: MemberTest1 },
+              { path: '/member/test2', component: MemberTest2 }
+            ]
+          }
         ]
       }
     ]
@@ -51,6 +64,7 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+  linkExactActiveClass: 'active',
   scrollBehavior () {
     return { left: 0, top: 0 }
   }
@@ -78,3 +92,5 @@ export default router
 // 6、对应配置的路由记录是 { path: '/', component: Layout组件, children: [ { path: '/xxx', component: member/Layout组件 } ] }
 // 7、src/views/member/Layout.vue 是放置三级路由出口
 // 7、对应配置的路由记录是 { path: '/', component: Layout组件, children: [ { path: '/xxx', component: member/Layout组件, children:[{ path: '/xxx', component: ... }] } ] }
+// 8、linkExactActiveClass是统一配置router-link标签exact-acive-class属性进行路由切换时的精准匹配（精准匹配到哪个路由，该链接就高亮显示）
+// 9、vue3中router-link标签设置active-class属性进行路由模糊匹配的坑点：必须是包含且嵌套关系的路由
