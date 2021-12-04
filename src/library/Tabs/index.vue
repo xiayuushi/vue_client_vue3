@@ -59,6 +59,7 @@ export default {
 // 7、tabsPanel是tabs_panel.vue中传入的默认插槽的内容，它整体是tabs栏每一项（含头部nav与内容allTabsPanelList两个部分）
 // 7、allTabsPanelList是整合了动态生成与静态生成的内容的数组，nav是tabs栏头部，tabsPanel是tabs栏头部对应的下方内容
 // 8、除了setup，其余的都是选项API，都可以通过this获取当前组件实例
+// 9、modelValue的值是当前选中项的标识
 </script>
 
 <style lang="less" scoped>
