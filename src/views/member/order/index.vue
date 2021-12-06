@@ -12,7 +12,13 @@
     <div class="order-list">
       <div v-if="loading" class="loading"></div>
       <div class="none" v-if="!loading && orderDetail?.items.length === 0">暂无数据</div>
-      <OrderItem :order="item" v-for="item in orderDetail?.items" :key="item.id" @on-cancel-order="cancelOrderHandler" @on-delete-order="deleteOrderHandler" />
+      <OrderItem
+      v-for="item in orderDetail?.items"
+      :key="item.id"
+      :order="item"
+      @on-cancel-order="cancelOrderHandler"
+      @on-delete-order="deleteOrderHandler"
+      @on-confirm-order="confirmOrderHandler" />
     </div>
     <!-- 分页组件 -->
     <XxxPagination
@@ -29,7 +35,7 @@
 <script>
 import { ref, reactive, watch } from 'vue'
 import { orderStatusList } from '@/api/contant'
-import { getMyMemberOrderDetail, deleteOrder } from '@/api/order'
+import { getMyMemberOrderDetail, deleteOrder, confirmOrder } from '@/api/order'
 import OrderItem from './components/order_item'
 import OrderCancel from './components/order_cancel'
 import Confirm from '@/library/Confirm/index.js'
@@ -41,6 +47,18 @@ const useCancelOrderHandler = () => {
     target.value.openDialog(currentCancelOrder)
   }
   return { cancelOrderHandler, target }
+}
+
+const useConfirmOrderHandler = () => {
+  const confirmOrderHandler = (currentConfirmOrder) => {
+    Confirm({ text: '是否确认收货？' }).then(() => {
+      confirmOrder(currentConfirmOrder.id).then(res => {
+        Message({ type: 'success', text: '确认收货成功' })
+        currentConfirmOrder.orderState = res.result.orderState
+      })
+    }).catch(() => {})
+  }
+  return { confirmOrderHandler }
 }
 
 export default {
@@ -76,7 +94,17 @@ export default {
       }).catch(() => { })
     }
 
-    return { activeName, orderStatusList, orderDetail, tabClickHandler, loading, params, deleteOrderHandler, ...useCancelOrderHandler() }
+    return {
+      activeName,
+      orderStatusList,
+      orderDetail,
+      tabClickHandler,
+      loading,
+      params,
+      deleteOrderHandler,
+      ...useCancelOrderHandler(),
+      ...useConfirmOrderHandler()
+    }
   }
 }
 
@@ -85,6 +113,8 @@ export default {
 // 2、1 页面应该重置为第一页
 // 2、2 订单状态应该切换到相应的状态（监听传给后端的params参数，并且让params.orderState与点击项的索引建立联系）
 // 3、useCancelOrderHandler是将取消订单的逻辑函数从setup中抽离出来便于直观查看，将当前取消订单的信息传递给取消组件order_cancel.vue内部
+// 4、订单支付成功后，需要手动模拟发货才能看到'确认收货'按钮
+// 4、模拟发货直接将订单id拼接到参数后：如 http://pcapi-xiaotuxian-front-devtest.itheima.net/member/order/consignment/1467888949115490305
 </script>
 
 <style lang="less" scoped>

@@ -57,7 +57,7 @@
         <!-- 订单状态body部分 当订单状态为 '5待评价'时 右侧才会显示 '查看详情' '再次购买' '申请售后' -->
         <!-- 订单状态body部分 当订单状态为 '6已取消'时 右侧才会显示 '查看详情'   -->
         <XxxButton v-if="order.orderState===1" type="primary" size="small" @click="$router.push(`/member/pay?id=${order.id}`)">立即付款</XxxButton>
-        <XxxButton v-if="order.orderState===3" type="primary" size="small">确认收货</XxxButton>
+        <XxxButton v-if="order.orderState===3" type="primary" size="small" @click="$emit('on-confirm-order', order)">确认收货</XxxButton>
         <p><a href="javascript:;" @click="$router.push(`/member/order/${order.id}`)">查看详情</a></p>
         <p v-if="order.orderState===1" @click="$emit('on-cancel-order', order)"><a href="javascript:;">取消订单</a></p>
         <p v-if="[2,3,4,5].includes(order.orderState)"><a href="javascript:;">再次购买</a></p>
@@ -79,7 +79,7 @@ export default {
       default: () => {}
     }
   },
-  emits: ['on-cancel-order', 'on-delete-order'],
+  emits: ['on-cancel-order', 'on-delete-order', 'on-confirm-order'],
   setup (props) {
     const { start, timeText } = payInterval()
     start(props.order.countdown)
