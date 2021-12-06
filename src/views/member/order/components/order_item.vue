@@ -58,8 +58,8 @@
         <!-- 订单状态body部分 当订单状态为 '6已取消'时 右侧才会显示 '查看详情'   -->
         <XxxButton v-if="order.orderState===1" type="primary" size="small" @click="$router.push(`/member/pay?id=${order.id}`)">立即付款</XxxButton>
         <XxxButton v-if="order.orderState===3" type="primary" size="small">确认收货</XxxButton>
-        <p><a href="javascript:;">查看详情</a></p>
-        <p v-if="order.orderState===1"><a href="javascript:;">取消订单</a></p>
+        <p><a href="javascript:;" @click="$router.push(`/member/order/${order.id}`)">查看详情</a></p>
+        <p v-if="order.orderState===1" @click="$emit('on-cancel-order', order)"><a href="javascript:;">取消订单</a></p>
         <p v-if="[2,3,4,5].includes(order.orderState)"><a href="javascript:;">再次购买</a></p>
         <p v-if="[4,5].includes(order.orderState)"><a href="javascript:;">申请售后</a></p>
       </div>
@@ -79,6 +79,7 @@ export default {
       default: () => {}
     }
   },
+  emits: ['on-cancel-order'],
   setup (props) {
     const { start, timeText } = payInterval()
     start(props.order.countdown)
@@ -103,7 +104,10 @@ export default {
 // 3、订单状态body部分 当订单状态为 '5待评价'时 右侧才会显示 '查看详情' '再次购买' '申请售后'
 // 3、订单状态body部分 当订单状态为 '6已取消'时 右侧才会显示 '查看详情'
 
+// 4、取消订单时需要弹出对话框，因为当前组件是会在父组件中进行遍历的，并且并非只有取消订单一种操作
+// 4、因此建议将弹出取消对话框的操作放在父组件中去完成
 // N、orderState是订单状态（1为待付款、2为待发货、3为待收货、4为待评价、5为已完成、6为已取消，未传该参数或0为全部）
+
 </script>
 
 <style lang="less" scoped>
