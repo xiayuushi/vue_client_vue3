@@ -12,7 +12,7 @@
     <div class="order-list">
       <div v-if="loading" class="loading"></div>
       <div class="none" v-if="!loading && orderDetail?.items.length === 0">暂无数据</div>
-      <OrderItem :order="item" v-for="item in orderDetail?.items" :key="item.id" @on-cancel-order="cancelOrderHandler" />
+      <OrderItem :order="item" v-for="item in orderDetail?.items" :key="item.id" @on-cancel-order="cancelOrderHandler" @on-delete-order="deleteOrderHandler" />
     </div>
     <!-- 分页组件 -->
     <XxxPagination
@@ -29,9 +29,11 @@
 <script>
 import { ref, reactive, watch } from 'vue'
 import { orderStatusList } from '@/api/contant'
-import { getMyMemberOrderDetail } from '@/api/order'
+import { getMyMemberOrderDetail, deleteOrder } from '@/api/order'
 import OrderItem from './components/order_item'
 import OrderCancel from './components/order_cancel'
+import Confirm from '@/library/Confirm/index.js'
+import Message from '@/library/Message/index.js'
 
 const useCancelOrderHandler = () => {
   const target = ref(null)
@@ -50,12 +52,15 @@ export default {
     const loading = ref(false)
     const params = reactive({ page: 1, pageSize: 10, orderState: 0 })
 
-    watch(params, () => {
+    const refreshOrderList = () => {
       loading.value = true
       getMyMemberOrderDetail(params).then(res => {
         orderDetail.value = res.result
         loading.value = false
       })
+    }
+    watch(params, () => {
+      refreshOrderList()
     }, { immediate: true })
 
     const tabClickHandler = ({ index }) => {
@@ -63,7 +68,15 @@ export default {
       params.orderState = index
     }
 
-    return { activeName, orderStatusList, orderDetail, tabClickHandler, loading, params, ...useCancelOrderHandler() }
+    const deleteOrderHandler = (currentDeleteOrder) => {
+      Confirm({ text: '是否删除当前订单？' }).then(async () => {
+        await deleteOrder(currentDeleteOrder.id)
+        Message({ type: 'success', text: '删除订单成功' })
+        refreshOrderList()
+      }).catch(() => { })
+    }
+
+    return { activeName, orderStatusList, orderDetail, tabClickHandler, loading, params, deleteOrderHandler, ...useCancelOrderHandler() }
   }
 }
 

@@ -9,7 +9,7 @@
         <b>付款截止：{{ timeText }}</b>
       </span>
       <!-- 当订单状态为 '5已完成'或者'6已取消'时才会显示'删除'按钮 -->
-      <a href="javascript:;" class="del" v-if="[5,6].includes(order.orderState)">删除</a>
+      <a href="javascript:;" class="del" v-if="[5,6].includes(order.orderState)" @click="$emit('on-delete-order', order)">删除</a>
     </div>
     <div class="body">
       <div class="column goods">
@@ -79,7 +79,7 @@ export default {
       default: () => {}
     }
   },
-  emits: ['on-cancel-order'],
+  emits: ['on-cancel-order', 'on-delete-order'],
   setup (props) {
     const { start, timeText } = payInterval()
     start(props.order.countdown)

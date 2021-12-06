@@ -31,7 +31,12 @@ export const getMyMemberOrderDetail = ({ page = 1, pageSize = 10, orderState = 0
   return request('/member/order', 'get', { page, pageSize, orderState })
 }
 
-// 获取订单 参数orderId是订单id，cancelReason是取消原因
+// 取消订单 参数orderId是订单id，cancelReason是取消原因
 export const cancelOrder = (orderId, cancelReason) => {
   return request(`/member/order/${orderId}/cancel`, 'put', { cancelReason })
+}
+
+// 删除订单 参数orderId是订单id
+export const deleteOrder = (orderId) => {
+  return request('/member/order', 'delete', { ids: [orderId] })
 }

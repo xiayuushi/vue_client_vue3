@@ -41,7 +41,6 @@ export default {
       currentOrder.value = currentCancelOrder
     }
     const submit = async () => {
-      console.log('submit')
       if (!selectedReasonText.value) return Message({ text: '请选择取消订单的原因' })
       const { result } = await cancelOrder(currentOrder.value.id, selectedReasonText.value)
       Message({ type: 'success', text: '取消订单成功' })
