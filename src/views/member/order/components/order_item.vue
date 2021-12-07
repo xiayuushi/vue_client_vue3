@@ -15,12 +15,12 @@
       <div class="column goods">
         <ul>
           <li v-for="item in order.skus" :key="item.id">
-            <a class="image" href="javascript:;">
+            <router-link class="image" :to="`/product/${item.spuId}`">
               <img
                 :src="item.image"
                 alt=""
               />
-            </a>
+            </router-link>
             <div class="info">
               <p class="name ellipsis-2">
                 {{ item.name }}
@@ -40,7 +40,7 @@
         <!-- 订单状态body部分 当订单状态为 '3待收货'时才会显示'查看物流' -->
         <!-- 订单状态body部分 当订单状态为 '4待评价'时才会显示'评价商品' -->
         <!-- 订单状态body部分 当订单状态为 '5已完成'时才会显示'查看评价' -->
-        <p v-if="order.orderState===3"><a href="javascript:;" class="green">查看物流</a></p>
+        <p v-if="order.orderState===3" @click="$emit('on-logistics-order', order)"><a href="javascript:;" class="green">查看物流</a></p>
         <p v-if="order.orderState===4"><a href="javascript:;" class="green">评价商品</a></p>
         <p v-if="order.orderState===5"><a href="javascript:;" class="green">查看评价</a></p>
       </div>
@@ -79,7 +79,7 @@ export default {
       default: () => {}
     }
   },
-  emits: ['on-cancel-order', 'on-delete-order', 'on-confirm-order'],
+  emits: ['on-cancel-order', 'on-delete-order', 'on-confirm-order', 'on-logistics-order'],
   setup (props) {
     const { start, timeText } = payInterval()
     start(props.order.countdown)

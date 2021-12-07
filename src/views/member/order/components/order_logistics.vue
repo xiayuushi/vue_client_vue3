@@ -1,0 +1,152 @@
+<template>
+  <XxxDialog v-model:visible="showDialog" title="查看物流">
+    <div class="order-logistics-goods">
+      <a class="image" href="javascript:;">
+        <img :src="logisticsRenderData?.picture" alt="" />
+        <p>{{ logisticsRenderData?.count }}件商品</p>
+      </a>
+      <div class="info">
+        <p><span>配送企业：</span>{{ logisticsRenderData?.company?.name }}</p>
+        <p><span>快递单号：</span>{{ logisticsRenderData?.company?.number }}</p>
+        <p><span>联系电话：</span>{{ logisticsRenderData?.company?.tel }}</p>
+      </div>
+    </div>
+    <div class="order-logistics-list">
+      <div class="item" v-for="(item, index) in logisticsRenderData?.list" :key="item.id">
+        <div class="line" :class="{ active: index }"></div>
+        <div class="logistics">
+          <p>{{ item.text }}</p>
+          <p>{{ item.time }}</p>
+        </div>
+      </div>
+    </div>
+  </XxxDialog>
+</template>
+
+<script>
+import { ref } from 'vue'
+import { logisticsOrder } from '@/api/order'
+
+export default {
+  name: 'OrderLogistice',
+  setup () {
+    const showDialog = ref(false)
+    const logisticsRenderData = ref(null)
+    const openDialog = async (currentLogisticsOrderId) => {
+      const { result } = await logisticsOrder(currentLogisticsOrderId)
+      logisticsRenderData.value = result
+      showDialog.value = true
+    }
+
+    return { showDialog, openDialog, logisticsRenderData }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.xxx-dialog :deep(.wrapper) {
+  width: 680px;
+}
+.order-logistics-goods {
+  display: flex;
+  background-color: #f5f5f5;
+  height: 130px;
+  align-items: center;
+  padding: 0 20px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  .image {
+    width: 92px;
+    height: 92px;
+    border: 1px solid #e4e4e4;
+    position: relative;
+    p {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 20px;
+      line-height: 20px;
+      color: #fff;
+      background-color: rgba(0,0,0,.5);
+      text-align: center;
+    }
+  }
+  .info {
+    flex: 1;
+    padding-left: 20px;
+    line-height: 30px;
+    span {
+      color: #999;
+    }
+  }
+}
+.order-logistics-list {
+  position: relative;
+  padding-top: 10px;
+  font-size: 14px;
+  .item {
+    display: flex;
+    &:last-child {
+      .line {
+        border-color: transparent;
+        &::before{
+          top: 0;
+        }
+      }
+    }
+    .line {
+      width: 27px;
+      border-right: 2px solid #f5f5f5;
+      margin-right: 25px;
+      position: relative;
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(7px, 0);
+        border-radius: 50%;
+      }
+      &::before {
+        width: 12px;
+        height: 12px;
+        background: #e4e4e4;
+      }
+      // 激活
+      &.active {
+        &::before {
+          background: @xtxColor;
+          z-index: 1;
+        }
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 0;
+          transform: translate(11px, -4px);
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          background: #E3F9F4;
+        }
+      }
+    }
+    .logistics {
+      flex: 1;
+      padding-bottom: 35px;
+      position: relative;
+      top: -3px;
+      p {
+        &:first-child {
+          color: #666;
+        }
+        &:last-child {
+          color: #999;
+          margin-top: 6px;
+        }
+      }
+    }
+  }
+}
+</style>

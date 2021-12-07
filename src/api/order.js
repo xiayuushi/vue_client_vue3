@@ -45,3 +45,8 @@ export const deleteOrder = (orderId) => {
 export const confirmOrder = (orderId) => {
   return request(`/member/order/${orderId}/receipt`, 'put')
 }
+
+// 订单查看物流 参数orderId是订单id
+export const logisticsOrder = (orderId) => {
+  return request(`/member/order/${orderId}/logistics`, 'get')
+}

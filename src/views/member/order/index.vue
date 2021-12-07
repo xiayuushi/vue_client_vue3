@@ -18,7 +18,8 @@
       :order="item"
       @on-cancel-order="cancelOrderHandler"
       @on-delete-order="deleteOrderHandler"
-      @on-confirm-order="confirmOrderHandler" />
+      @on-confirm-order="confirmOrderHandler"
+      @on-logistics-order="logisticsOrderHandler" />
     </div>
     <!-- 分页组件 -->
     <XxxPagination
@@ -28,7 +29,9 @@
       :pageSize="params.pageSize"
       @onChange="params.page=$event" />
     <!-- 取消原因组件 -->
-    <OrderCancel ref="target" />
+    <OrderCancel ref="cancelComponent" />
+    <!-- 查看物流组件 -->
+    <OrderLogistics ref="logisticsComponent" />
   </div>
 </template>
 
@@ -38,15 +41,16 @@ import { orderStatusList } from '@/api/contant'
 import { getMyMemberOrderDetail, deleteOrder, confirmOrder } from '@/api/order'
 import OrderItem from './components/order_item'
 import OrderCancel from './components/order_cancel'
+import OrderLogistics from './components/order_logistics'
 import Confirm from '@/library/Confirm/index.js'
 import Message from '@/library/Message/index.js'
 
 const useCancelOrderHandler = () => {
-  const target = ref(null)
+  const cancelComponent = ref(null)
   const cancelOrderHandler = (currentCancelOrder) => {
-    target.value.openDialog(currentCancelOrder)
+    cancelComponent.value.openDialog(currentCancelOrder)
   }
-  return { cancelOrderHandler, target }
+  return { cancelOrderHandler, cancelComponent }
 }
 
 const useConfirmOrderHandler = () => {
@@ -61,9 +65,17 @@ const useConfirmOrderHandler = () => {
   return { confirmOrderHandler }
 }
 
+const useLogisticsOrderHandler = () => {
+  const logisticsComponent = ref(null)
+  const logisticsOrderHandler = (currentLogisticsOrder) => {
+    logisticsComponent.value.openDialog(currentLogisticsOrder.id)
+  }
+  return { logisticsOrderHandler, logisticsComponent }
+}
+
 export default {
   name: 'OrderPage',
-  components: { OrderItem, OrderCancel },
+  components: { OrderItem, OrderCancel, OrderLogistics },
   setup () {
     const activeName = ref('all')
     const orderDetail = ref(null)
@@ -103,7 +115,8 @@ export default {
       params,
       deleteOrderHandler,
       ...useCancelOrderHandler(),
-      ...useConfirmOrderHandler()
+      ...useConfirmOrderHandler(),
+      ...useLogisticsOrderHandler()
     }
   }
 }
@@ -115,6 +128,7 @@ export default {
 // 3、useCancelOrderHandler是将取消订单的逻辑函数从setup中抽离出来便于直观查看，将当前取消订单的信息传递给取消组件order_cancel.vue内部
 // 4、订单支付成功后，需要手动模拟发货才能看到'确认收货'按钮
 // 4、模拟发货直接将订单id拼接到参数后：如 http://pcapi-xiaotuxian-front-devtest.itheima.net/member/order/consignment/1467888949115490305
+// 5、因为取消订单、确认订单、查看物流都会在后续其他页面中使用到，为了在其他组件进行复用，将其逻辑提取封装为函数
 </script>
 
 <style lang="less" scoped>
