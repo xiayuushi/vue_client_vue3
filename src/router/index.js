@@ -16,6 +16,7 @@ const PayCallback = () => import('@/views/member/pay/components/pay_callback')
 const MemberLayout = () => import('@/views/member/Layout')
 const MemberHome = () => import('@/views/member/home')
 const MemberOrder = () => import('@/views/member/order')
+const MemberOrderDetail = () => import('@/views/member/order/detail')
 const MemberTest = () => import('@/views/member/order/test')
 const MemberTest1 = () => import('@/views/member/order/components/test1')
 const MemberTest2 = () => import('@/views/member/order/components/test2')
@@ -39,6 +40,7 @@ const routes = [
         children: [
           { path: '/member', component: MemberHome },
           { path: '/member/order', component: MemberOrder },
+          { path: '/member/order/:id', component: MemberOrderDetail },
           {
             path: '/member/test',
             component: MemberTest,
