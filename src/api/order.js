@@ -5,6 +5,11 @@ export const createOrderPre = () => {
   return request('/member/order/pre', 'get')
 }
 
+// 根据订单id生成订单（用于再次购买）
+export const createOrderRepurchase = (id) => {
+  return request(`/member/order/repurchase/${id}`, 'get')
+}
+
 // 添加收货地址 参数form是对象（详情字段参考接口文档）
 export const memberAddress = (form) => {
   return request('/member/address', 'post', form)

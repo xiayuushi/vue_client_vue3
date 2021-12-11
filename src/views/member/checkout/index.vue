@@ -79,8 +79,8 @@
 
 <script>
 import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
-import { createOrderPre, memberOrder } from '@/api/order'
+import { useRouter, useRoute } from 'vue-router'
+import { createOrderPre, memberOrder, createOrderRepurchase } from '@/api/order'
 import Message from '@/library/Message/index.js'
 import CheckoutAddress from './components/checkout_address'
 
@@ -98,10 +98,18 @@ export default {
       buyerMessage: null
     })
 
-    createOrderPre().then(res => {
-      checkoutDatalist.value = res.result
-      params.goods = res.result.goods.map(({ skuId, count }) => ({ skuId, count }))
-    })
+    const route = useRoute()
+    if (route.query.id) {
+      createOrderRepurchase(route.query.id).then(res => {
+        checkoutDatalist.value = res.result
+        params.goods = res.result.goods.map(({ skuId, count }) => ({ skuId, count }))
+      })
+    } else {
+      createOrderPre().then(res => {
+        checkoutDatalist.value = res.result
+        params.goods = res.result.goods.map(({ skuId, count }) => ({ skuId, count }))
+      })
+    }
 
     const changeAddress = (addressId) => {
       params.addressId = addressId
