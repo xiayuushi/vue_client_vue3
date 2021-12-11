@@ -12,7 +12,7 @@
         <!-- 待付款 -->
       <template v-if="order.orderState === 1">
         <XxxButton @click="$router.push('/member/pay?id='+order.id)" type="primary" size="small">立即付款</XxxButton>
-        <XxxButton type="gray" size="small">取消订单</XxxButton>
+        <XxxButton @click="cancelOrderHandler(order)" type="gray" size="small">取消订单</XxxButton>
       </template>
       <!-- 待发货 -->
       <template v-if="order.orderState === 2">
@@ -37,11 +37,18 @@
       </template>
       <!-- 已取消 -->
     </div>
+    <!-- 取消订单 -->
+    <teleport to="#xxx">
+      <OrderCancel ref="cancelComponent" />
+    </teleport>
   </div>
 </template>
 
 <script>
+import OrderCancel from './order_cancel'
 import { orderStatusList } from '@/api/contant'
+import { useCancelOrderHandler } from '../index'
+
 export default {
   name: 'OrderDetailAction',
   props: {
@@ -50,8 +57,9 @@ export default {
       default: () => {}
     }
   },
+  components: { OrderCancel },
   setup () {
-    return { orderStatusList }
+    return { orderStatusList, ...useCancelOrderHandler() }
   }
 }
 

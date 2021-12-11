@@ -45,7 +45,7 @@ import OrderLogistics from './components/order_logistics'
 import Confirm from '@/library/Confirm/index.js'
 import Message from '@/library/Message/index.js'
 
-const useCancelOrderHandler = () => {
+export const useCancelOrderHandler = () => {
   const cancelComponent = ref(null)
   const cancelOrderHandler = (currentCancelOrder) => {
     cancelComponent.value.openDialog(currentCancelOrder)
@@ -53,7 +53,7 @@ const useCancelOrderHandler = () => {
   return { cancelOrderHandler, cancelComponent }
 }
 
-const useConfirmOrderHandler = () => {
+export const useConfirmOrderHandler = () => {
   const confirmOrderHandler = (currentConfirmOrder) => {
     Confirm({ text: '是否确认收货？' }).then(() => {
       confirmOrder(currentConfirmOrder.id).then(res => {
