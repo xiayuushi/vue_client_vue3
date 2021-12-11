@@ -1,5 +1,5 @@
 <template>
-  <div class="order-info">
+  <div class="order-info" v-if="order">
     <!-- 商品列表 -->
     <h3>订单商品</h3>
     <table class="goods-table">
