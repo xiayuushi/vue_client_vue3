@@ -14,6 +14,7 @@
       </template>
     </Suspense>
     <!-- 商品信息 -->
+    <DetailInfo :order="orderDetail" />
   </div>
 </template>
 
@@ -24,10 +25,11 @@ import { getMyMemberOrder } from '@/api/order'
 import DetailAction from './components/detail_action'
 import DetailStep from './components/detail_step'
 import DetailLogistics from './components/detail_logistics'
+import DetailInfo from './components/detail_info'
 
 export default {
   name: 'MemberOrderDetail',
-  components: { DetailAction, DetailStep, DetailLogistics },
+  components: { DetailAction, DetailStep, DetailLogistics, DetailInfo },
   setup () {
     const route = useRoute()
     const orderDetail = ref(null)
