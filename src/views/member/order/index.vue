@@ -65,7 +65,7 @@ const useConfirmOrderHandler = () => {
   return { confirmOrderHandler }
 }
 
-const useLogisticsOrderHandler = () => {
+export const useLogisticsOrderHandler = () => {
   const logisticsComponent = ref(null)
   const logisticsOrderHandler = (currentLogisticsOrder) => {
     logisticsComponent.value.openDialog(currentLogisticsOrder.id)
